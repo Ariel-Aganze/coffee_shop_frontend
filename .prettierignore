@@ -1,0 +1,6 @@
+dist/
+coverage/
+node_modules/
+package-lock.json
+# Generated from the backend's OpenAPI schema — regenerate, don't hand-format.
+src/lib/api/schema.d.ts

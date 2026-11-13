@@ -1,0 +1,96 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/outfit';
+
+/*
+ * Caffio design tokens.
+ * Palette sampled from the design direction: warm off-white canvas, white
+ * cards, espresso brown as the primary colour, amber as the accent.
+ * Use the semantic names (bg-primary, text-ink-muted, border-border…) in
+ * components rather than raw hex values, so the look can evolve in one place.
+ */
+@theme {
+  /* Typography */
+  --font-sans:
+    'Outfit Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Brand — espresso scale (700 is the primary) */
+  --color-espresso-50: #f8f5f3;
+  --color-espresso-100: #eee8e3;
+  --color-espresso-200: #ddd1ca;
+  --color-espresso-300: #c4b1a7;
+  --color-espresso-400: #a3887b;
+  --color-espresso-500: #846a5e;
+  --color-espresso-600: #73574e;
+  --color-espresso-700: #644942;
+  --color-espresso-800: #4e3833;
+  --color-espresso-900: #3a2a25;
+  --color-espresso-950: #261b18;
+
+  /* Semantic colours */
+  --color-primary: var(--color-espresso-700);
+  --color-primary-hover: var(--color-espresso-800);
+  --color-primary-soft: var(--color-espresso-100);
+  --color-primary-foreground: #ffffff;
+
+  --color-accent: #fdc13a;
+  --color-accent-soft: #fff4d6;
+  --color-accent-foreground: #3a2a25;
+
+  --color-canvas: #f5f1ee; /* app background behind cards */
+  --color-surface: #ffffff; /* cards, sidebar, header */
+  --color-surface-muted: #faf8f6; /* table headers, subtle fills */
+  --color-peach: #ffeeea; /* icon tiles */
+  --color-border: #ebe5e0;
+  --color-border-strong: #d9cfc8;
+
+  --color-ink: #2b211d; /* headings & primary text */
+  --color-ink-muted: #75675f; /* secondary text (≥4.5:1 on white) */
+  --color-ink-subtle: #9c8f88; /* placeholders, hints (large text only) */
+
+  /* Status colours: text on its -soft background is ≥5:1 (WCAG AA). */
+  --color-success: #356b50;
+  --color-success-soft: #e8f3ec;
+  --color-warning: #8a5700;
+  --color-warning-soft: #fff4d6;
+  --color-danger: #b23c35;
+  --color-danger-soft: #ffeeef;
+  --color-info: #355f9e;
+  --color-info-soft: #eaf1fb;
+
+  /* Shape & depth */
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+  --shadow-card: 0 1px 2px rgb(58 42 37 / 0.04), 0 6px 24px -8px rgb(58 42 37 / 0.08);
+  --shadow-pop: 0 12px 32px -8px rgb(58 42 37 / 0.18);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-canvas font-sans text-ink antialiased;
+  }
+
+  /* Visible keyboard focus everywhere; no outline for mouse clicks. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary;
+  }
+
+  ::selection {
+    @apply bg-accent-soft text-ink;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
