@@ -203,8 +203,26 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * @description /api/users/
+         *     - Owner: manages every employee of the business.
+         *     - Admin: manages employees, but not the owner or other admins.
+         *     - Branch manager: manages cashiers and inventory managers assigned to
+         *       their own branches (RBAC 4.2 "Manage employees: own branch").
+         *     Accounts are deactivated, never deleted (AUTH-008). Every account and
+         *     permission change is audited (AUTH-011, AUD-008, 4.3).
+         */
         get: operations["auth_users_list"];
         put?: never;
+        /**
+         * @description /api/users/
+         *     - Owner: manages every employee of the business.
+         *     - Admin: manages employees, but not the owner or other admins.
+         *     - Branch manager: manages cashiers and inventory managers assigned to
+         *       their own branches (RBAC 4.2 "Manage employees: own branch").
+         *     Accounts are deactivated, never deleted (AUTH-008). Every account and
+         *     permission change is audited (AUTH-011, AUD-008, 4.3).
+         */
         post: operations["auth_users_create"];
         delete?: never;
         options?: never;
@@ -219,13 +237,70 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * @description /api/users/
+         *     - Owner: manages every employee of the business.
+         *     - Admin: manages employees, but not the owner or other admins.
+         *     - Branch manager: manages cashiers and inventory managers assigned to
+         *       their own branches (RBAC 4.2 "Manage employees: own branch").
+         *     Accounts are deactivated, never deleted (AUTH-008). Every account and
+         *     permission change is audited (AUTH-011, AUD-008, 4.3).
+         */
         get: operations["auth_users_retrieve"];
+        /**
+         * @description /api/users/
+         *     - Owner: manages every employee of the business.
+         *     - Admin: manages employees, but not the owner or other admins.
+         *     - Branch manager: manages cashiers and inventory managers assigned to
+         *       their own branches (RBAC 4.2 "Manage employees: own branch").
+         *     Accounts are deactivated, never deleted (AUTH-008). Every account and
+         *     permission change is audited (AUTH-011, AUD-008, 4.3).
+         */
         put: operations["auth_users_update"];
         post?: never;
+        /**
+         * @description /api/users/
+         *     - Owner: manages every employee of the business.
+         *     - Admin: manages employees, but not the owner or other admins.
+         *     - Branch manager: manages cashiers and inventory managers assigned to
+         *       their own branches (RBAC 4.2 "Manage employees: own branch").
+         *     Accounts are deactivated, never deleted (AUTH-008). Every account and
+         *     permission change is audited (AUTH-011, AUD-008, 4.3).
+         */
         delete: operations["auth_users_destroy"];
         options?: never;
         head?: never;
+        /**
+         * @description /api/users/
+         *     - Owner: manages every employee of the business.
+         *     - Admin: manages employees, but not the owner or other admins.
+         *     - Branch manager: manages cashiers and inventory managers assigned to
+         *       their own branches (RBAC 4.2 "Manage employees: own branch").
+         *     Accounts are deactivated, never deleted (AUTH-008). Every account and
+         *     permission change is audited (AUTH-011, AUD-008, 4.3).
+         */
         patch: operations["auth_users_partial_update"];
+        trace?: never;
+    };
+    "/api/auth/users/{id}/set-password/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Owner / admin / branch manager sets a new password for a staff member
+         *     they manage — for staff without an email who can't reset it themselves.
+         *     The staff member is signed out everywhere.
+         */
+        post: operations["auth_users_set_password_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/branch-availability/": {
@@ -267,8 +342,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * @description Branches of the signed-in user's business (BR-001..BR-012), scoped to the
+         *     branches they may see. Branches are deactivated, never deleted (BR-012).
+         */
         get: operations["branches_list"];
         put?: never;
+        /**
+         * @description Branches of the signed-in user's business (BR-001..BR-012), scoped to the
+         *     branches they may see. Branches are deactivated, never deleted (BR-012).
+         */
         post: operations["branches_create"];
         delete?: never;
         options?: never;
@@ -283,12 +366,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * @description Branches of the signed-in user's business (BR-001..BR-012), scoped to the
+         *     branches they may see. Branches are deactivated, never deleted (BR-012).
+         */
         get: operations["branches_retrieve"];
+        /**
+         * @description Branches of the signed-in user's business (BR-001..BR-012), scoped to the
+         *     branches they may see. Branches are deactivated, never deleted (BR-012).
+         */
         put: operations["branches_update"];
         post?: never;
+        /**
+         * @description Branches of the signed-in user's business (BR-001..BR-012), scoped to the
+         *     branches they may see. Branches are deactivated, never deleted (BR-012).
+         */
         delete: operations["branches_destroy"];
         options?: never;
         head?: never;
+        /**
+         * @description Branches of the signed-in user's business (BR-001..BR-012), scoped to the
+         *     branches they may see. Branches are deactivated, never deleted (BR-012).
+         */
         patch: operations["branches_partial_update"];
         trace?: never;
     };
@@ -433,8 +532,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * @description Product categories (PROD-001). DELETE deactivates instead of deleting:
+         *     products and past sales keep their category.
+         */
         get: operations["categories_list"];
         put?: never;
+        /**
+         * @description Product categories (PROD-001). DELETE deactivates instead of deleting:
+         *     products and past sales keep their category.
+         */
         post: operations["categories_create"];
         delete?: never;
         options?: never;
@@ -449,12 +556,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /**
+         * @description Product categories (PROD-001). DELETE deactivates instead of deleting:
+         *     products and past sales keep their category.
+         */
         get: operations["categories_retrieve"];
+        /**
+         * @description Product categories (PROD-001). DELETE deactivates instead of deleting:
+         *     products and past sales keep their category.
+         */
         put: operations["categories_update"];
         post?: never;
+        /**
+         * @description Product categories (PROD-001). DELETE deactivates instead of deleting:
+         *     products and past sales keep their category.
+         */
         delete: operations["categories_destroy"];
         options?: never;
         head?: never;
+        /**
+         * @description Product categories (PROD-001). DELETE deactivates instead of deleting:
+         *     products and past sales keep their category.
+         */
         patch: operations["categories_partial_update"];
         trace?: never;
     };
@@ -747,6 +870,32 @@ export interface paths {
         patch: operations["products_partial_update"];
         trace?: never;
     };
+    "/api/products/{id}/availability/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Where this product is sold. A branch with no setting sells it.
+         *     GET lists the active branches you can see; PUT switches branches on/off
+         *     (branch managers and inventory managers: their own branches only).
+         */
+        get: operations["products_availability_list"];
+        /**
+         * @description Where this product is sold. A branch with no setting sells it.
+         *     GET lists the active branches you can see; PUT switches branches on/off
+         *     (branch managers and inventory managers: their own branches only).
+         */
+        put: operations["products_availability_update"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/products/{id}/current-price/": {
         parameters: {
             query?: never;
@@ -771,14 +920,14 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * @description GET  /api/products/{id}/prices/   → list all price rows
-         *     POST /api/products/{id}/prices/   → create a new price row
+         * @description GET  /api/products/{id}/prices/   → every price row, newest start first
+         *     POST /api/products/{id}/prices/   → new price, now or scheduled
          */
         get: operations["products_prices_list"];
         put?: never;
         /**
-         * @description GET  /api/products/{id}/prices/   → list all price rows
-         *     POST /api/products/{id}/prices/   → create a new price row
+         * @description GET  /api/products/{id}/prices/   → every price row, newest start first
+         *     POST /api/products/{id}/prices/   → new price, now or scheduled
          */
         post: operations["products_prices_create"];
         delete?: never;
@@ -1295,6 +1444,10 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        _AvailabilityChangeRequest: {
+            branch: number;
+            is_available: boolean;
+        };
         _CatalogBranch: {
             id: number;
             name: string;
@@ -1560,8 +1713,12 @@ export interface components {
             readonly created_at: string;
             readonly id: number;
             is_active: boolean;
+            /** @description Active branch managers assigned to this branch (BR-006). */
+            readonly managers: components["schemas"]["BranchManager"][];
             name: string;
             phone: string;
+            /** @description Active staff assigned to this branch. */
+            readonly staff_count: number;
             /** Format: date-time */
             readonly updated_at: string;
         };
@@ -1584,6 +1741,10 @@ export interface components {
             /** Format: decimal */
             revenue: string;
             transactions: number;
+        };
+        BranchManager: {
+            id: number;
+            name: string;
         };
         BranchProductAvailability: {
             branch: number;
@@ -1758,6 +1919,8 @@ export interface components {
             readonly id: number;
             is_active: boolean;
             name: string;
+            /** @description Active products in this category. */
+            readonly product_count: number;
             /** Format: date-time */
             readonly updated_at: string;
         };
@@ -2368,7 +2531,7 @@ export interface components {
         };
         /**
          * @description Updates product metadata only. To change price, use the
-         *     /products/{id}/prices/ endpoint.
+         *     /products/{id}/prices/ endpoint. Send `image: null` to remove the photo.
          */
         PatchedProductUpdateRequest: {
             category?: number | null;
@@ -2448,7 +2611,7 @@ export interface components {
         };
         Product: {
             category: number | null;
-            readonly category_name: string;
+            readonly category_name: string | null;
             /** Format: date-time */
             readonly created_at: string;
             /**
@@ -2459,6 +2622,8 @@ export interface components {
             /** Format: decimal */
             readonly current_price: string | null;
             description: string;
+            /** @description Branches where this product is switched off (PROD-008). Every other branch sells it. */
+            readonly hidden_branch_ids: number[];
             readonly id: number;
             /** Format: uri */
             image: string | null;
@@ -2470,18 +2635,18 @@ export interface components {
             /** Format: date-time */
             readonly updated_at: string;
         };
-        ProductCreate: {
-            category: number | null;
-            description: string;
-            readonly id: number;
-            /** Format: uri */
-            image: string | null;
-            is_active: boolean;
-            name: string;
-            product_type: components["schemas"]["ProductTypeEnum"];
-            /** @description Unique identifier within the business. */
-            sku: string;
+        ProductAvailabilityUpdateRequest: {
+            branches: components["schemas"]["_AvailabilityChangeRequest"][];
         };
+        /** @description One branch's row in a product's availability panel. */
+        ProductBranchAvailability: {
+            branch: number;
+            branch_name: string;
+            /** @description Whether the caller may switch this branch on or off. */
+            can_edit: boolean;
+            is_available: boolean;
+        };
+        /** @description Checks shared by create and update. */
         ProductCreateRequest: {
             category?: number | null;
             description?: string;
@@ -2509,10 +2674,13 @@ export interface components {
             /** Format: date-time */
             readonly created_at: string;
             readonly created_by: number | null;
-            readonly created_by_display: string;
+            readonly created_by_display: string | null;
+            readonly created_by_name: string | null;
             /** Format: date-time */
             effective_from: string;
             readonly id: number;
+            /** @description Why the price changed (shown in the price history). */
+            reason: string;
             /** Format: decimal */
             selling_price: string;
         };
@@ -2522,7 +2690,10 @@ export interface components {
              * @default 0.0000
              */
             cost_price?: string;
-            /** Format: date-time */
+            /**
+             * Format: date-time
+             * @description When the price starts. Omit for immediately; a future time schedules it. Past times are refused (PROD-009).
+             */
             effective_from?: string;
             /** @default  */
             reason?: string;
@@ -2538,22 +2709,7 @@ export interface components {
         ProductTypeEnum: "drink" | "food" | "packaged";
         /**
          * @description Updates product metadata only. To change price, use the
-         *     /products/{id}/prices/ endpoint.
-         */
-        ProductUpdate: {
-            category: number | null;
-            description: string;
-            /** Format: uri */
-            image: string | null;
-            is_active: boolean;
-            name: string;
-            product_type: components["schemas"]["ProductTypeEnum"];
-            /** @description Unique identifier within the business. */
-            sku: string;
-        };
-        /**
-         * @description Updates product metadata only. To change price, use the
-         *     /products/{id}/prices/ endpoint.
+         *     /products/{id}/prices/ endpoint. Send `image: null` to remove the photo.
          */
         ProductUpdateRequest: {
             category?: number | null;
@@ -2816,6 +2972,10 @@ export interface components {
              */
             unpaid_sales_total: string;
         };
+        /** @description POST /api/auth/users/{id}/set-password/ — owner/manager sets a staff password. */
+        SetPasswordRequest: {
+            new_password: string;
+        };
         StockMovement: {
             readonly branch: number;
             readonly branch_name: string;
@@ -2910,6 +3070,8 @@ export interface components {
             readonly id: number;
             /** @description Deactivate the account instead of deleting it. */
             is_active: boolean;
+            /** Format: date-time */
+            readonly last_login: string | null;
             last_name: string;
             phone: string;
             /**
@@ -3326,13 +3488,17 @@ export interface operations {
     auth_users_list: {
         parameters: {
             query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
+                /** @description Only staff assigned to this branch. */
+                branch?: number;
+                /** @description true = active, false = deactivated. */
+                is_active?: boolean;
+                ordering?: "-date_joined" | "-last_login" | "-name" | "name";
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                role?: "accountant" | "admin" | "branch_manager" | "cashier" | "inventory_manager" | "owner";
+                /** @description Name, username, email or phone. */
                 search?: string;
             };
             header?: never;
@@ -3475,6 +3641,34 @@ export interface operations {
             };
         };
     };
+    auth_users_set_password_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this user. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetPasswordRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["SetPasswordRequest"];
+                "multipart/form-data": components["schemas"]["SetPasswordRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Detail"];
+                };
+            };
+        };
+    };
     branch_availability_list: {
         parameters: {
             query?: {
@@ -3609,13 +3803,15 @@ export interface operations {
     branches_list: {
         parameters: {
             query?: {
+                /** @description true = active, false = deactivated. */
+                is_active?: boolean;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                /** @description Name, address or phone. */
                 search?: string;
             };
             header?: never;
@@ -3988,13 +4184,14 @@ export interface operations {
     categories_list: {
         parameters: {
             query?: {
+                is_active?: boolean;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                /** @description Name contains (case-insensitive). */
                 search?: string;
             };
             header?: never;
@@ -4632,13 +4829,15 @@ export interface operations {
     products_list: {
         parameters: {
             query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
+                category?: number;
+                is_active?: boolean;
+                ordering?: "-created_at" | "-name" | "-price" | "name" | "price";
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                product_type?: "drink" | "food" | "packaged";
+                /** @description Name or SKU contains. */
                 search?: string;
             };
             header?: never;
@@ -4677,7 +4876,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ProductCreate"];
+                    "application/json": components["schemas"]["Product"];
                 };
             };
         };
@@ -4727,7 +4926,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ProductUpdate"];
+                    "application/json": components["schemas"]["Product"];
                 };
             };
         };
@@ -4776,7 +4975,67 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ProductUpdate"];
+                    "application/json": components["schemas"]["Product"];
+                };
+            };
+        };
+    };
+    products_availability_list: {
+        parameters: {
+            query?: {
+                /** @description Which field to use when ordering the results. */
+                ordering?: string;
+                /** @description A search term. */
+                search?: string;
+            };
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this product. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductBranchAvailability"][];
+                };
+            };
+        };
+    };
+    products_availability_update: {
+        parameters: {
+            query?: {
+                /** @description Which field to use when ordering the results. */
+                ordering?: string;
+                /** @description A search term. */
+                search?: string;
+            };
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this product. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductAvailabilityUpdateRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["ProductAvailabilityUpdateRequest"];
+                "multipart/form-data": components["schemas"]["ProductAvailabilityUpdateRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProductBranchAvailability"][];
                 };
             };
         };

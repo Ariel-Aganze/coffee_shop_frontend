@@ -18,6 +18,7 @@ export type Permission =
   | 'cash.view'
   | 'products.view'
   | 'products.manage'
+  | 'products.availability'
   | 'inventory.view'
   | 'inventory.manage'
   | 'expenses.view'
@@ -26,7 +27,9 @@ export type Permission =
   | 'reports.view'
   | 'staff.manage'
   | 'branches.view'
-  | 'branches.manage'
+  | 'branches.create'
+  | 'branches.edit'
+  | 'branches.deactivate'
   | 'settings.manage'
   | 'currency.change'
   | 'audit.view'
@@ -40,6 +43,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'cash.view',
     'products.view',
     'products.manage',
+    'products.availability',
     'inventory.view',
     'inventory.manage',
     'expenses.view',
@@ -48,7 +52,9 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'reports.view',
     'staff.manage',
     'branches.view',
-    'branches.manage',
+    'branches.create',
+    'branches.edit',
+    'branches.deactivate',
     'settings.manage',
     'currency.change',
     'audit.view',
@@ -65,7 +71,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'reports.view',
     'staff.manage',
     'branches.view',
-    'branches.manage',
+    'branches.edit',
     'settings.manage',
     'audit.view',
   ],
@@ -76,6 +82,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'sales.refund',
     'cash.view',
     'products.view',
+    'products.availability',
     'inventory.view',
     'inventory.manage',
     'expenses.view',
@@ -92,6 +99,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
   inventory_manager: [
     'products.view',
     'products.manage',
+    'products.availability',
     'inventory.view',
     'inventory.manage',
     'expenses.view',
@@ -112,6 +120,14 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'branches.view',
     'audit.view',
   ],
+}
+
+/**
+ * Cost prices reveal margins: every role that manages products, stock or
+ * money sees them; cashiers only sell (the API leaves the fields out).
+ */
+export function canSeeCosts(role: Role | undefined): boolean {
+  return role !== undefined && role !== 'cashier'
 }
 
 export function can(role: Role | undefined, permission: Permission): boolean {
@@ -139,11 +155,33 @@ export function hasBusinessWideAccess(user: { role: Role; branch_ids: readonly n
   return user.role === 'owner' || (user.role === 'accountant' && user.branch_ids.length === 0)
 }
 
-export const ROLE_LABELS: Record<Role, string> = {
-  owner: 'Business owner',
-  admin: 'System administrator',
-  branch_manager: 'Branch manager',
-  cashier: 'Cashier',
-  inventory_manager: 'Inventory manager',
-  accountant: 'Accountant',
+/** Roles a branch manager may create and manage (mirrors the API). */
+export const BRANCH_MANAGED_ROLES: readonly Role[] = ['cashier', 'inventory_manager']
+
+/**
+ * Whether `actor` may edit / deactivate / set the password of `target`.
+ * Mirrors UserViewSet._check_can_manage: the owner manages everyone; admins
+ * everyone except owners and admins; branch managers only cashiers and
+ * inventory managers (the API already limits them to their branches).
+ */
+export function canManageUser(actor: { role: Role }, target: { role: Role }): boolean {
+  if (actor.role === 'owner') return true
+  if (target.role === 'owner' || target.role === 'admin') return false
+  if (actor.role === 'admin') return true
+  if (actor.role === 'branch_manager') return BRANCH_MANAGED_ROLES.includes(target.role)
+  return false
+}
+
+/** Roles `actor` may give to someone (create or edit). Nobody can grant "owner". */
+export function assignableRoles(actor: { role: Role }): Role[] {
+  switch (actor.role) {
+    case 'owner':
+      return ['admin', 'branch_manager', 'cashier', 'inventory_manager', 'accountant']
+    case 'admin':
+      return ['branch_manager', 'cashier', 'inventory_manager', 'accountant']
+    case 'branch_manager':
+      return [...BRANCH_MANAGED_ROLES]
+    default:
+      return []
+  }
 }

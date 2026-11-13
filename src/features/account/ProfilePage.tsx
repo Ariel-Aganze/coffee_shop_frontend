@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { TextField } from '@/components/ui/TextField'
 import { meQueryKey, updateProfile, type ProfileInput } from '@/features/auth/api'
-import { hasBusinessWideAccess, ROLE_LABELS } from '@/features/auth/permissions'
+import { hasBusinessWideAccess } from '@/features/auth/permissions'
 import { useCurrentUser } from '@/features/auth/useAuth'
 import { useBusiness } from '@/features/business/useBusiness'
 import { applyServerErrors, fieldMessage } from '@/lib/forms'
@@ -102,7 +102,7 @@ export function ProfilePage() {
             <div className="min-w-0">
               <p className="truncate text-lg font-semibold text-ink">{name}</p>
               <Badge tone="brand" className="mt-1">
-                {ROLE_LABELS[user.role]}
+                {t(`roles.${user.role}`)}
               </Badge>
             </div>
           </div>

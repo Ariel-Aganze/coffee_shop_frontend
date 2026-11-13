@@ -25,6 +25,15 @@ describe('permissions mirror the backend RBAC', () => {
     }
   })
 
+  it('branch permissions follow the API: owner creates/deactivates, admin may edit', () => {
+    expect(can('owner', 'branches.create')).toBe(true)
+    expect(can('owner', 'branches.deactivate')).toBe(true)
+    expect(can('admin', 'branches.edit')).toBe(true)
+    expect(can('admin', 'branches.create')).toBe(false)
+    expect(can('admin', 'branches.deactivate')).toBe(false)
+    expect(can('branch_manager', 'branches.edit')).toBe(false)
+  })
+
   it('product changes are limited to owner and inventory manager (as the API)', () => {
     expect(can('owner', 'products.manage')).toBe(true)
     expect(can('inventory_manager', 'products.manage')).toBe(true)

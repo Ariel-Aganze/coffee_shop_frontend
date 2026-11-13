@@ -5,7 +5,6 @@ import { Link } from 'react-router'
 
 import { Avatar } from '@/components/ui/Avatar'
 import { useAuth, useCurrentUser } from '@/features/auth/useAuth'
-import { ROLE_LABELS } from '@/features/auth/permissions'
 import { cn } from '@/lib/cn'
 import { displayName } from '@/lib/names'
 
@@ -58,7 +57,7 @@ export function UserMenu() {
         <span className="hidden min-w-0 md:block">
           <span className="block max-w-40 truncate text-sm font-semibold text-ink">{name}</span>
           <span className="block max-w-40 truncate text-xs text-ink-muted">
-            {ROLE_LABELS[user.role]}
+            {t(`roles.${user.role}`)}
           </span>
         </span>
         <ChevronDown

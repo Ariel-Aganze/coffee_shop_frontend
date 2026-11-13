@@ -9,13 +9,10 @@ import {
   Banknote,
   Bell,
   Boxes,
-  Building2,
   ChartColumn,
-  Coffee,
   ReceiptText,
   ScrollText,
   ShoppingCart,
-  Users,
   Wallet,
 } from 'lucide-react'
 import { lazy, type ReactNode } from 'react'
@@ -53,6 +50,21 @@ const RegisterPage = lazy(() =>
 )
 const SettingsPage = lazy(() =>
   import('@/features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+)
+const BranchesPage = lazy(() =>
+  import('@/features/branches/BranchesPage').then((m) => ({ default: m.BranchesPage })),
+)
+const StaffPage = lazy(() =>
+  import('@/features/staff/StaffPage').then((m) => ({ default: m.StaffPage })),
+)
+const ProductsPage = lazy(() =>
+  import('@/features/products/ProductsPage').then((m) => ({ default: m.ProductsPage })),
+)
+const CategoriesPage = lazy(() =>
+  import('@/features/products/CategoriesPage').then((m) => ({ default: m.CategoriesPage })),
+)
+const ProductDetailPage = lazy(() =>
+  import('@/features/products/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })),
 )
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
@@ -105,12 +117,9 @@ export const routes: RouteObject[] = [
                 'sales.view',
               ),
               page('/cash', 'nav.cash', <ComingSoonPage step={7} icon={Banknote} />, 'cash.view'),
-              page(
-                '/products',
-                'nav.products',
-                <ComingSoonPage step={6} icon={Coffee} />,
-                'products.view',
-              ),
+              page('/products', 'nav.products', <ProductsPage />, 'products.view'),
+              page('/products/categories', 'categories.title', <CategoriesPage />, 'products.view'),
+              page('/products/:productId', 'nav.products', <ProductDetailPage />, 'products.view'),
               page(
                 '/inventory',
                 'nav.inventory',
@@ -129,13 +138,8 @@ export const routes: RouteObject[] = [
                 <ComingSoonPage step={11} icon={ChartColumn} />,
                 'reports.view',
               ),
-              page('/staff', 'nav.staff', <ComingSoonPage step={5} icon={Users} />, 'staff.manage'),
-              page(
-                '/branches',
-                'nav.branches',
-                <ComingSoonPage step={5} icon={Building2} />,
-                'branches.view',
-              ),
+              page('/staff', 'nav.staff', <StaffPage />, 'staff.manage'),
+              page('/branches', 'nav.branches', <BranchesPage />, 'branches.view'),
               page('/settings', 'nav.settings', <SettingsPage />, 'settings.manage'),
               page(
                 '/audit',
