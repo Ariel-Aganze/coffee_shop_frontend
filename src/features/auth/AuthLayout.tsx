@@ -13,6 +13,8 @@ interface AuthLayoutProps {
    * email") that replace a form, so screen readers announce the new state.
    */
   focusTitle?: boolean
+  /** Card width: 'md' for short forms, 'lg' for the registration wizard. */
+  width?: 'md' | 'lg'
 }
 
 /** Centred brand card used by the signed-out screens (sign in, password reset). */
@@ -22,6 +24,7 @@ export function AuthLayout({
   children,
   footer,
   focusTitle = false,
+  width = 'md',
 }: AuthLayoutProps) {
   const titleRef = useRef<HTMLHeadingElement>(null)
   useEffect(() => {
@@ -29,7 +32,7 @@ export function AuthLayout({
   }, [focusTitle])
   return (
     <main className="grid min-h-dvh place-items-center bg-canvas px-4 py-10">
-      <div className="w-full max-w-md">
+      <div className={width === 'lg' ? 'w-full max-w-2xl' : 'w-full max-w-md'}>
         <div className="mb-8 flex justify-center">
           <Logo className="h-16 sm:h-20" />
         </div>

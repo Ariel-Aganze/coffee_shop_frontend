@@ -17,9 +17,16 @@ describe('parseErrorBody', () => {
     expect(parsed.message).toBe('Something about the whole form.')
   })
 
-  it('flattens nested field errors', () => {
-    const parsed = parseErrorBody({ items: [{ quantity: ['Must be positive.'] }] })
-    expect(parsed.fieldErrors.items).toEqual(['Must be positive.'])
+  it('turns nested errors into dotted field paths', () => {
+    const parsed = parseErrorBody({
+      items: [{}, { quantity: ['Must be positive.'] }],
+      owner: { username: ['This username is already taken.'] },
+    })
+    expect(parsed.fieldErrors).toEqual({
+      'items.1.quantity': ['Must be positive.'],
+      'owner.username': ['This username is already taken.'],
+    })
+    expect(parsed.message).toBe('Must be positive.')
   })
 
   it('handles list bodies raised by ValidationError(["…"])', () => {

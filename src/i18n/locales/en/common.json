@@ -106,7 +106,8 @@
     "confirm": "Confirm new password",
     "currentRequired": "Enter your current password.",
     "newInvalid": "Choose a password that meets all the requirements.",
-    "mismatch": "The two passwords don't match."
+    "mismatch": "The two passwords don't match.",
+    "confirmPlain": "Confirm password"
   },
   "forgot": {
     "title": "Reset your password",
@@ -157,5 +158,125 @@
     "submit": "Update password",
     "cancel": "Cancel",
     "success": "Password updated. You've been signed out on other devices."
+  },
+  "dialog": {
+    "close": "Close"
+  },
+  "onboarding": {
+    "title": "Register your business",
+    "subtitle": "Set up Caffio for your coffee shop in a few minutes.",
+    "haveAccount": "Already have an account?",
+    "newHere": "New to Caffio?",
+    "registerLink": "Register your business",
+    "progress": "Registration progress",
+    "stepOf": "Step {{step}} of {{total}}",
+    "done": "completed",
+    "steps": {
+      "business": {
+        "short": "Business",
+        "title": "Your business",
+        "hint": "How your coffee shop appears in Caffio and on receipts."
+      },
+      "owner": {
+        "short": "Account",
+        "title": "Your owner account",
+        "hint": "You'll sign in with this account. You can add staff later."
+      },
+      "region": {
+        "short": "Region",
+        "title": "Currency and region",
+        "hint": "Pick the currency you sell in and how dates and numbers should look."
+      },
+      "branch": {
+        "short": "Branch",
+        "title": "Your first branch",
+        "hint": "Add your first location. You can add more branches later."
+      },
+      "review": {
+        "short": "Review",
+        "title": "Check and create",
+        "hint": "Make sure everything is right, then create your business."
+      }
+    },
+    "businessName": "Business name",
+    "contactEmail": "Contact email",
+    "contactPhone": "Contact phone",
+    "address": "Address",
+    "usernameHint": "Letters, numbers and . @ + - _ only.",
+    "currency": "Currency",
+    "currencyHint": "All branches use this currency. You can change it later in Settings.",
+    "branchName": "Branch name",
+    "branchNameHint": "For example the neighbourhood: “Kimihurura”.",
+    "ownerName": "Name",
+    "required": "This field is required.",
+    "emailInvalid": "Enter a valid email address.",
+    "usernameInvalid": "Use letters, numbers and . @ + - _ only.",
+    "currencyRequired": "Choose the currency you sell in.",
+    "back": "Back",
+    "next": "Continue",
+    "edit": "Edit",
+    "editSection": "Edit {{section}}",
+    "create": "Create my business",
+    "welcome": "Welcome to Caffio, {{business}}!"
+  },
+  "regional": {
+    "timezone": "Timezone",
+    "timezoneHint": "Used for business days, reports and receipts.",
+    "language": "Language",
+    "languageHint": "The interface is in English for now; French is on its way.",
+    "comingSoon": "{{language}} (coming soon)",
+    "dateFormat": "Date format",
+    "numberFormat": "Number format"
+  },
+  "currency": {
+    "title": "Currency",
+    "hint": "The currency every branch sells in.",
+    "details": "Symbol {{symbol}} · {{decimals}} decimal places",
+    "change": "Change currency",
+    "ownerOnly": "Only the business owner can change the currency.",
+    "history": "Change history",
+    "noHistory": "The currency hasn't been changed.",
+    "to": "to",
+    "search": "Search by currency, code or country",
+    "loading": "Loading currencies…",
+    "loadFailed": "We couldn't load the currency list.",
+    "retry": "Try again",
+    "noMatch": "No currency matches “{{query}}”.",
+    "changeTitle": "Change currency",
+    "pickHint": "Choose the new currency. You'll see what changes before anything is saved. Current: {{code}}.",
+    "newCurrency": "New currency",
+    "impactHistory": "Sales, payments, expenses and reports already recorded keep their amounts in {{old}}. Reports show each currency separately.",
+    "impactNew": "New sales, payments, expenses and cash sessions will use {{new}} from now on.",
+    "impactPricesTitle": "Product prices are not converted.",
+    "impactPrices": "A price of {{old}} will be charged as {{new}}. Review your prices right after the change.",
+    "openDrawers_one": "{{count}} cash drawer is still open. Close it first: sales started in {{old}} can't take payments after the switch.",
+    "openDrawers_other": "{{count}} cash drawers are still open. Close them first: sales started in {{old}} can't take payments after the switch.",
+    "reason": "Reason (optional)",
+    "reasonHint": "Kept in the change history and the audit log.",
+    "understand": "I understand that past records stay in {{old}}, new transactions use {{new}}, and prices are not converted.",
+    "confirm": "Switch to {{code}}",
+    "changed": "The currency is now {{code}}."
+  },
+  "settings": {
+    "profileTitle": "Business profile",
+    "profileHint": "Shown on receipts and to your team.",
+    "logoHint": "PNG, JPEG or WebP, up to 2 MB. A square or wide logo works best.",
+    "logoAlt": "{{business}} logo",
+    "uploadLogo": "Upload logo",
+    "replaceLogo": "Replace logo",
+    "removeLogo": "Remove",
+    "logoUpdated": "Logo updated.",
+    "logoRemoved": "Logo removed.",
+    "logoType": "Use a PNG, JPEG or WebP image.",
+    "logoSize": "The logo must be 2 MB or smaller.",
+    "saved": "Settings saved.",
+    "regionalTitle": "Regional preferences",
+    "regionalHint": "How dates, times and numbers appear for everyone in your business.",
+    "preview": "Preview",
+    "posTitle": "Point of sale",
+    "posHint": "Owners and branch managers can always give any discount.",
+    "discountLimit": "Largest discount a cashier can give",
+    "discountHint": "As a percentage of each line. Use 0 to stop cashiers from giving discounts.",
+    "percentInvalid": "Enter a number from 0 to 100 (up to 2 decimals)."
   }
 }

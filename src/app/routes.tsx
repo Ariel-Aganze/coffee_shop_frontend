@@ -14,7 +14,6 @@ import {
   Coffee,
   ReceiptText,
   ScrollText,
-  Settings,
   ShoppingCart,
   Users,
   Wallet,
@@ -49,6 +48,12 @@ const ProfilePage = lazy(() =>
 const ChangePasswordPage = lazy(() =>
   import('@/features/account/ChangePasswordPage').then((m) => ({ default: m.ChangePasswordPage })),
 )
+const RegisterPage = lazy(() =>
+  import('@/features/onboarding/RegisterPage').then((m) => ({ default: m.RegisterPage })),
+)
+const SettingsPage = lazy(() =>
+  import('@/features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+)
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
@@ -76,7 +81,10 @@ export const routes: RouteObject[] = [
     children: [
       {
         element: <RedirectIfAuthenticated />,
-        children: [{ path: '/login', element: <LoginPage /> }],
+        children: [
+          { path: '/login', element: <LoginPage /> },
+          { path: '/register', element: <RegisterPage /> },
+        ],
       },
       // Usable signed in or out (e.g. following an emailed link on a shared device).
       { path: '/forgot-password', element: <ForgotPasswordPage /> },
@@ -128,12 +136,7 @@ export const routes: RouteObject[] = [
                 <ComingSoonPage step={5} icon={Building2} />,
                 'branches.view',
               ),
-              page(
-                '/settings',
-                'nav.settings',
-                <ComingSoonPage step={4} icon={Settings} />,
-                'settings.manage',
-              ),
+              page('/settings', 'nav.settings', <SettingsPage />, 'settings.manage'),
               page(
                 '/audit',
                 'nav.audit',

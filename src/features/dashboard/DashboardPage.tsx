@@ -26,7 +26,15 @@ export function DashboardPage() {
             {branch ? t('dashboard.scopeOne', { branch: branch.name }) : t('dashboard.scopeAll')}
           </p>
         </div>
-        <Logo className="hidden h-12 sm:block" />
+        {business?.logo ? (
+          <img
+            src={business.logo}
+            alt={t('settings.logoAlt', { business: business.name })}
+            className="hidden h-14 w-auto max-w-40 object-contain sm:block"
+          />
+        ) : (
+          <Logo className="hidden h-12 sm:block" />
+        )}
       </Card>
       <ComingSoonPage step={10} icon={LayoutDashboard} />
     </div>

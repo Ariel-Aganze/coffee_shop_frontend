@@ -90,12 +90,30 @@ export function parseErrorBody(body: unknown): { message?: string; fieldErrors: 
   const fieldErrors: FieldErrors = {}
   for (const [field, value] of Object.entries(record)) {
     if (field === 'non_field_errors') continue
-    const messages = asMessages(value)
-    if (messages.length) fieldErrors[field] = messages
+    collectFieldErrors(value, field, fieldErrors)
   }
   const [formLevel] = asMessages(record.non_field_errors)
   const [firstField] = Object.values(fieldErrors)
   return { message: formLevel ?? firstField?.[0], fieldErrors }
+}
+
+/**
+ * Nested serializer errors become dotted paths, matching form field names:
+ *   { owner: { username: ['Taken.'] } }      → 'owner.username'
+ *   { items: [{}, { quantity: ['Too many'] }] } → 'items.1.quantity'
+ */
+function collectFieldErrors(value: unknown, path: string, out: FieldErrors) {
+  if (typeof value === 'string') {
+    out[path] = [...(out[path] ?? []), value]
+  } else if (Array.isArray(value)) {
+    value.forEach((item, index) =>
+      collectFieldErrors(item, typeof item === 'string' ? path : `${path}.${index}`, out),
+    )
+  } else if (value && typeof value === 'object') {
+    for (const [key, nested] of Object.entries(value)) {
+      collectFieldErrors(nested, key === 'non_field_errors' ? path : `${path}.${key}`, out)
+    }
+  }
 }
 
 /** A message for any thrown value — use in toasts and error banners. */

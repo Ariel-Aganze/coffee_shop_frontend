@@ -74,6 +74,40 @@ export const fixtures = {
       updated_at: '',
     },
   ],
+  currencies: [
+    {
+      id: 1,
+      code: 'RWF',
+      name: 'Rwandan Franc',
+      symbol: 'FRw',
+      decimal_places: 0,
+      country_hint: 'Rwanda',
+    },
+    {
+      id: 2,
+      code: 'KES',
+      name: 'Kenyan Shilling',
+      symbol: 'KSh',
+      decimal_places: 2,
+      country_hint: 'Kenya',
+    },
+    {
+      id: 3,
+      code: 'USD',
+      name: 'US Dollar',
+      symbol: '$',
+      decimal_places: 2,
+      country_hint: 'United States',
+    },
+    {
+      id: 4,
+      code: 'XAF',
+      name: 'Central African CFA Franc',
+      symbol: 'FCFA',
+      decimal_places: 0,
+      country_hint: 'Central Africa (CEMAC)',
+    },
+  ],
   user(role: string, overrides: Record<string, unknown> = {}) {
     return {
       id: 7,

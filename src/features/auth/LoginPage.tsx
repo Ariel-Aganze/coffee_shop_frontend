@@ -64,7 +64,18 @@ export function LoginPage() {
         : null
 
   return (
-    <AuthLayout title={t('auth.signInTitle')} subtitle={t('auth.signInSubtitle')}>
+    <AuthLayout
+      title={t('auth.signInTitle')}
+      subtitle={t('auth.signInSubtitle')}
+      footer={
+        <p className="text-sm text-ink-muted">
+          {t('onboarding.newHere')}{' '}
+          <Link to="/register" className="font-medium text-primary hover:underline">
+            {t('onboarding.registerLink')}
+          </Link>
+        </p>
+      }
+    >
       {notice && !formError && (
         <Alert tone="info" className="mt-5">
           {notice}

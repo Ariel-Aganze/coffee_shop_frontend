@@ -1106,6 +1106,9 @@ export interface paths {
         /**
          * @description Public read-only currency catalogue (CUR-004..CUR-007).
          *     Supports search by name / ISO code / country.
+         *
+         *     Public (no sign-in): the registration wizard needs it before an account
+         *     exists, and it only contains ISO 4217 reference data.
          */
         get: operations["settings_currencies_list"];
         put?: never;
@@ -1519,31 +1522,6 @@ export interface components {
             method: string;
             reference: string;
         };
-        _RegistrationBranchDocRequest: {
-            address?: string;
-            name: string;
-            phone?: string;
-        };
-        _RegistrationOwnerDocRequest: {
-            /** Format: email */
-            email: string;
-            first_name?: string;
-            last_name?: string;
-            password: string;
-            username: string;
-        };
-        _RegistrationSettingsDocRequest: {
-            /** @description ISO 4217 code, e.g. RWF. */
-            currency_code: string;
-            /** @default YYYY-MM-DD */
-            date_format?: string;
-            /** @default en */
-            language?: string;
-            /** @default 1,234.56 */
-            number_format?: string;
-            /** @default UTC */
-            timezone?: string;
-        };
         AdjustmentRequest: {
             /** @description Branch id (may also be passed as ?branch=). Required in one of the two. */
             branch?: number;
@@ -1641,6 +1619,12 @@ export interface components {
             /** Format: date-time */
             readonly updated_at: string;
         };
+        BusinessRegistrationRequest: {
+            business: components["schemas"]["BusinessRequest"];
+            first_branch: components["schemas"]["RegistrationBranchRequest"];
+            owner: components["schemas"]["RegistrationOwnerRequest"];
+            settings: components["schemas"]["RegistrationSettingsRequest"];
+        };
         BusinessRequest: {
             address?: string;
             contact_email?: string;
@@ -1655,10 +1639,10 @@ export interface components {
              * @description Largest discount a cashier may apply on a sale line, as a % of the line value (POS-008). 0 = cashiers cannot discount. Owners and branch managers are not limited.
              */
             cashier_max_discount_percent: string;
-            date_format: string;
+            date_format: components["schemas"]["DateFormatEnum"];
             readonly id: number;
-            language: string;
-            number_format: string;
+            language: components["schemas"]["LanguageEnum"];
+            number_format: components["schemas"]["NumberFormatEnum"];
             readonly primary_currency: components["schemas"]["Currency"];
             timezone: string;
             /** Format: date-time */
@@ -1868,6 +1852,14 @@ export interface components {
             sales_trend: components["schemas"]["_DashTrend"];
             scope: components["schemas"]["_DashScope"];
         };
+        /**
+         * @description * `YYYY-MM-DD` - 2026-03-04
+         *     * `DD/MM/YYYY` - 04/03/2026
+         *     * `MM/DD/YYYY` - 03/04/2026
+         *     * `DD MMM YYYY` - 04 Mar 2026
+         * @enum {string}
+         */
+        DateFormatEnum: "YYYY-MM-DD" | "DD/MM/YYYY" | "MM/DD/YYYY" | "DD MMM YYYY";
         Detail: {
             detail: string;
         };
@@ -2019,6 +2011,12 @@ export interface components {
             /** Format: date-time */
             readonly updated_at: string;
         };
+        /**
+         * @description * `en` - English
+         *     * `fr` - Français
+         * @enum {string}
+         */
+        LanguageEnum: "en" | "fr";
         LoginCredentialsRequest: {
             password: string;
             username: string;
@@ -2069,6 +2067,14 @@ export interface components {
          * @enum {string}
          */
         NotificationTypeEnum: "low_stock" | "inventory_adjustment" | "pending_approval" | "business_event" | "cash_discrepancy" | "stock_transfer" | "missing_end_of_day";
+        /**
+         * @description * `1,234.56` - 1,234.56
+         *     * `1.234,56` - 1.234,56
+         *     * `1 234,56` - 1 234,56
+         *     * `1'234.56` - 1'234.56
+         * @enum {string}
+         */
+        NumberFormatEnum: "1,234.56" | "1.234,56" | "1 234,56" | "1'234.56";
         OpenSessionRequest: {
             branch: number;
             /**
@@ -2173,21 +2179,6 @@ export interface components {
             previous: string | null;
             results: components["schemas"]["Category"][];
         };
-        PaginatedCurrencyChangeLogList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous: string | null;
-            results: components["schemas"]["CurrencyChangeLog"][];
-        };
         PaginatedExpenseCategoryList: {
             /** @example 123 */
             count: number;
@@ -2262,21 +2253,6 @@ export interface components {
              */
             previous: string | null;
             results: components["schemas"]["Product"][];
-        };
-        PaginatedProductPriceList: {
-            /** @example 123 */
-            count: number;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=4
-             */
-            next: string | null;
-            /**
-             * Format: uri
-             * @example http://api.example.org/accounts/?page=2
-             */
-            previous: string | null;
-            results: components["schemas"]["ProductPrice"][];
         };
         PaginatedSaleReadList: {
             /** @example 123 */
@@ -2363,9 +2339,9 @@ export interface components {
              * @description Largest discount a cashier may apply on a sale line, as a % of the line value (POS-008). 0 = cashiers cannot discount. Owners and branch managers are not limited.
              */
             cashier_max_discount_percent?: string;
-            date_format?: string;
-            language?: string;
-            number_format?: string;
+            date_format?: components["schemas"]["DateFormatEnum"];
+            language?: components["schemas"]["LanguageEnum"];
+            number_format?: components["schemas"]["NumberFormatEnum"];
             timezone?: string;
         };
         PatchedCategoryRequest: {
@@ -2637,16 +2613,40 @@ export interface components {
              */
             restock?: boolean;
         };
-        RegistrationRequestDocRequest: {
-            business: components["schemas"]["BusinessRequest"];
-            first_branch: components["schemas"]["_RegistrationBranchDocRequest"];
-            owner: components["schemas"]["_RegistrationOwnerDocRequest"];
-            settings: components["schemas"]["_RegistrationSettingsDocRequest"];
+        RegistrationBranchRequest: {
+            /** @default  */
+            address?: string;
+            name: string;
+            /** @default  */
+            phone?: string;
         };
-        RegistrationResponseDoc: {
+        RegistrationOwnerRequest: {
+            /** Format: email */
+            email: string;
+            /** @default  */
+            first_name?: string;
+            /** @default  */
+            last_name?: string;
+            password: string;
+            username: string;
+        };
+        /** @description Documentation of the registration response. */
+        RegistrationResponse: {
             branch: components["schemas"]["Branch"];
             business: components["schemas"]["Business"];
             settings: components["schemas"]["BusinessSettings"];
+        };
+        RegistrationSettingsRequest: {
+            /** @description ISO 4217 code, e.g. RWF. */
+            currency_code: string;
+            /** @default YYYY-MM-DD */
+            date_format?: components["schemas"]["DateFormatEnum"];
+            /** @default en */
+            language?: components["schemas"]["LanguageEnum"];
+            /** @default 1,234.56 */
+            number_format?: components["schemas"]["NumberFormatEnum"];
+            /** @default UTC */
+            timezone?: string;
         };
         /**
          * @description * `owner` - Business Owner
@@ -3811,9 +3811,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RegistrationRequestDocRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["RegistrationRequestDocRequest"];
-                "multipart/form-data": components["schemas"]["RegistrationRequestDocRequest"];
+                "application/json": components["schemas"]["BusinessRegistrationRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["BusinessRegistrationRequest"];
+                "multipart/form-data": components["schemas"]["BusinessRegistrationRequest"];
             };
         };
         responses: {
@@ -3822,7 +3822,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RegistrationResponseDoc"];
+                    "application/json": components["schemas"]["RegistrationResponse"];
                 };
             };
         };
@@ -3830,6 +3830,10 @@ export interface operations {
     cash_sessions_list: {
         parameters: {
             query?: {
+                /** @description Only sessions of this branch. */
+                branch?: number;
+                /** @description Only sessions of this cashier (user id). */
+                cashier?: number;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
@@ -3838,6 +3842,7 @@ export interface operations {
                 page_size?: number;
                 /** @description A search term. */
                 search?: string;
+                status?: "closed" | "open";
             };
             header?: never;
             path?: never;
@@ -4811,10 +4816,6 @@ export interface operations {
             query?: {
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
                 /** @description A search term. */
                 search?: string;
             };
@@ -4832,7 +4833,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedProductPriceList"];
+                    "application/json": components["schemas"]["ProductPrice"][];
                 };
             };
         };
@@ -5554,10 +5555,6 @@ export interface operations {
             query?: {
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
-                /** @description A page number within the paginated result set. */
-                page?: number;
-                /** @description Number of results to return per page. */
-                page_size?: number;
                 /** @description A search term. */
                 search?: string;
             };
@@ -5572,7 +5569,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginatedCurrencyChangeLogList"];
+                    "application/json": components["schemas"]["CurrencyChangeLog"][];
                 };
             };
         };
