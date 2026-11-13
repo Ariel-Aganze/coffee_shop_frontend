@@ -588,8 +588,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description DELETE deactivates: expenses already filed keep their category. */
         get: operations["expense_categories_list"];
         put?: never;
+        /** @description DELETE deactivates: expenses already filed keep their category. */
         post: operations["expense_categories_create"];
         delete?: never;
         options?: never;
@@ -604,12 +606,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description DELETE deactivates: expenses already filed keep their category. */
         get: operations["expense_categories_retrieve"];
+        /** @description DELETE deactivates: expenses already filed keep their category. */
         put: operations["expense_categories_update"];
         post?: never;
+        /** @description DELETE deactivates: expenses already filed keep their category. */
         delete: operations["expense_categories_destroy"];
         options?: never;
         head?: never;
+        /** @description DELETE deactivates: expenses already filed keep their category. */
         patch: operations["expense_categories_partial_update"];
         trace?: never;
     };
@@ -642,7 +648,7 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        patch: operations["expenses_partial_update"];
         trace?: never;
     };
     "/api/expenses/{id}/approve/": {
@@ -671,6 +677,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["expenses_reject_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/expenses/summary/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["expenses_summary_retrieve"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2083,9 +2105,10 @@ export interface components {
             readonly amount: string;
             /** Format: uri */
             readonly attachment: string | null;
+            readonly attachment_name: string | null;
             /** @description Null = central/business-level expense. */
             readonly branch: number | null;
-            readonly branch_name: string;
+            readonly branch_name: string | null;
             readonly business: number;
             readonly category: number;
             readonly category_name: string;
@@ -2101,10 +2124,12 @@ export interface components {
             /** Format: date-time */
             readonly reviewed_at: string | null;
             readonly reviewed_by: number | null;
-            readonly reviewed_by_display: string;
+            readonly reviewed_by_display: string | null;
+            readonly reviewed_by_name: string | null;
             readonly status: components["schemas"]["ExpenseStatusEnum"];
             readonly submitted_by: number;
             readonly submitted_by_display: string;
+            readonly submitted_by_name: string;
             /** Format: date-time */
             readonly updated_at: string;
         };
@@ -2112,6 +2137,8 @@ export interface components {
             /** Format: date-time */
             readonly created_at: string;
             description: string;
+            /** @description Expenses filed under it. */
+            readonly expense_count: number;
             readonly id: number;
             is_active: boolean;
             name: string;
@@ -2156,6 +2183,16 @@ export interface components {
          * @enum {string}
          */
         ExpenseStatusEnum: "pending" | "approved" | "rejected";
+        /** @description Totals for the expenses matching the list filters. */
+        ExpenseSummary: {
+            approved_count: number;
+            /** Format: decimal */
+            approved_total: string;
+            pending_count: number;
+            /** Format: decimal */
+            pending_total: string;
+            rejected_count: number;
+        };
         FinancialRow: {
             /** Format: decimal */
             cost_of_goods_sold: string;
@@ -2591,6 +2628,21 @@ export interface components {
             description?: string;
             is_active?: boolean;
             name?: string;
+        };
+        /** @description Corrections while an expense is still pending (EXP-011: audited). */
+        PatchedExpenseUpdateRequest: {
+            /** Format: decimal */
+            amount?: string;
+            /**
+             * Format: binary
+             * @description null removes the file.
+             */
+            attachment?: string | null;
+            branch?: number | null;
+            category?: number;
+            description?: string;
+            /** Format: date */
+            expense_date?: string;
         };
         /**
          * @description PATCH /api/auth/me/ — a user edits their OWN contact details. Role,
@@ -4519,13 +4571,14 @@ export interface operations {
     expense_categories_list: {
         parameters: {
             query?: {
+                is_active?: boolean;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                /** @description Name contains. */
                 search?: string;
             };
             header?: never;
@@ -4671,14 +4724,23 @@ export interface operations {
     expenses_list: {
         parameters: {
             query?: {
+                branch?: number;
+                category?: number;
+                /** @description Expense date on or after. */
+                from?: string;
+                /** @description Only expenses I filed. */
+                mine?: boolean;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                /** @description Description contains. */
                 search?: string;
+                status?: "approved" | "pending" | "rejected";
+                /** @description Expense date on or before. */
+                to?: string;
             };
             header?: never;
             path?: never;
@@ -4742,6 +4804,33 @@ export interface operations {
             };
         };
     };
+    expenses_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description A unique integer value identifying this expense. */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedExpenseUpdateRequest"];
+                "multipart/form-data": components["schemas"]["PatchedExpenseUpdateRequest"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Expense"];
+                };
+            };
+        };
+    };
     expenses_approve_create: {
         parameters: {
             query?: never;
@@ -4794,6 +4883,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Expense"];
+                };
+            };
+        };
+    };
+    expenses_summary_retrieve: {
+        parameters: {
+            query?: {
+                branch?: number;
+                category?: number;
+                /** @description Expense date on or after. */
+                from?: string;
+                /** @description Only expenses I filed. */
+                mine?: boolean;
+                /** @description Description contains. */
+                search?: string;
+                status?: "approved" | "pending" | "rejected";
+                /** @description Expense date on or before. */
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExpenseSummary"];
                 };
             };
         };

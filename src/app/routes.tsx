@@ -5,7 +5,7 @@
  * and its title (handle.title, shown in the header and the browser tab).
  * Screens of later build steps render <ComingSoonPage step={n} />.
  */
-import { Bell, ChartColumn, ScrollText, Wallet } from 'lucide-react'
+import { Bell, ChartColumn, ScrollText } from 'lucide-react'
 import { lazy, type ReactNode } from 'react'
 import type { RouteObject } from 'react-router'
 
@@ -79,6 +79,17 @@ const MovementsPage = lazy(() =>
 const StockCountPage = lazy(() =>
   import('@/features/inventory/StockCountPage').then((m) => ({ default: m.StockCountPage })),
 )
+const ExpensesPage = lazy(() =>
+  import('@/features/expenses/ExpensesPage').then((m) => ({ default: m.ExpensesPage })),
+)
+const ExpenseCategoriesPage = lazy(() =>
+  import('@/features/expenses/ExpenseCategoriesPage').then((m) => ({
+    default: m.ExpenseCategoriesPage,
+  })),
+)
+const ExpenseDetailPage = lazy(() =>
+  import('@/features/expenses/ExpenseDetailPage').then((m) => ({ default: m.ExpenseDetailPage })),
+)
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
@@ -133,12 +144,14 @@ export const routes: RouteObject[] = [
               page('/inventory', 'nav.inventory', <StockPage />, 'inventory.view'),
               page('/inventory/movements', 'nav.inventory', <MovementsPage />, 'inventory.view'),
               page('/inventory/count', 'stock.countPage', <StockCountPage />, 'inventory.manage'),
+              page('/expenses', 'nav.expenses', <ExpensesPage />, 'expenses.view'),
               page(
-                '/expenses',
-                'nav.expenses',
-                <ComingSoonPage step={9} icon={Wallet} />,
+                '/expenses/categories',
+                'expenses.categoriesTab',
+                <ExpenseCategoriesPage />,
                 'expenses.view',
               ),
+              page('/expenses/:expenseId', 'nav.expenses', <ExpenseDetailPage />, 'expenses.view'),
               page(
                 '/reports',
                 'nav.reports',
