@@ -27,7 +27,7 @@ import {
   type Product,
 } from './api'
 import { ImagePicker } from './ImagePicker'
-import { amountSchema, marginRatio } from './money'
+import { amountSchema, marginRatio } from '@/lib/amount'
 
 const FIELDS = [
   'name',

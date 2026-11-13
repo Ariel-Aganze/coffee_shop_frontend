@@ -26,7 +26,7 @@ import {
   type Product,
 } from './api'
 import { AvailabilityCard } from './AvailabilityCard'
-import { marginRatio } from './money'
+import { marginRatio } from '@/lib/amount'
 import { PriceHistoryCard } from './PriceHistoryCard'
 import { ProductFormDialog } from './ProductFormDialog'
 import { ProductThumb } from './ProductThumb'

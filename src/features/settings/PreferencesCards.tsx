@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { z } from 'zod'
@@ -124,12 +124,20 @@ export function RegionalCard({ settings }: { settings: BusinessSettings }) {
 }
 
 // ------------------------------------------------------------------ point of sale
+const PAYMENT_METHODS = [
+  'cash',
+  'mobile_money',
+  'bank_card',
+  'bank_transfer',
+  'other',
+] as const satisfies readonly BusinessSettings['enabled_payment_methods'][number][]
 const posSchema = z.object({
   cashier_max_discount_percent: z
     .string()
     .trim()
     .regex(/^\d{1,3}(\.\d{1,2})?$/, 'settings.percentInvalid')
     .refine((v) => Number(v) <= 100, 'settings.percentInvalid'),
+  enabled_payment_methods: z.array(z.enum(PAYMENT_METHODS)).min(1, 'settings.methodsRequired'),
 })
 type PosValues = z.infer<typeof posSchema>
 
@@ -139,13 +147,17 @@ export function PosCard({ settings }: { settings: BusinessSettings }) {
   const [formError, setFormError] = useState<string | null>(null)
   const {
     register,
+    control,
     handleSubmit,
     setError,
     reset,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<PosValues>({
     resolver: zodResolver(posSchema),
-    values: { cashier_max_discount_percent: String(Number(settings.cashier_max_discount_percent)) },
+    values: {
+      cashier_max_discount_percent: String(Number(settings.cashier_max_discount_percent)),
+      enabled_payment_methods: settings.enabled_payment_methods,
+    },
   })
 
   const onSubmit = handleSubmit(async (data) => {
@@ -155,7 +167,12 @@ export function PosCard({ settings }: { settings: BusinessSettings }) {
       reset(data)
       toast.success(t('settings.saved'))
     } catch (error) {
-      setFormError(applyServerErrors(error, setError, {}, ['cashier_max_discount_percent']))
+      setFormError(
+        applyServerErrors(error, setError, {}, [
+          'cashier_max_discount_percent',
+          'enabled_payment_methods',
+        ]),
+      )
     }
   })
 
@@ -177,6 +194,52 @@ export function PosCard({ settings }: { settings: BusinessSettings }) {
             error={fieldMessage(t, errors.cashier_max_discount_percent?.message)}
             className="sm:max-w-xs"
             {...register('cashier_max_discount_percent')}
+          />
+          <Controller
+            control={control}
+            name="enabled_payment_methods"
+            render={({ field }) => (
+              <fieldset aria-describedby="payment-methods-hint">
+                <legend className="text-sm font-medium text-ink">
+                  {t('settings.paymentMethods')}
+                </legend>
+                <p id="payment-methods-hint" className="mt-0.5 text-sm text-ink-muted">
+                  {t('settings.paymentMethodsHint')}
+                </p>
+                <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                  {PAYMENT_METHODS.map((method) => {
+                    const checked = field.value.includes(method)
+                    return (
+                      <label
+                        key={method}
+                        className="flex cursor-pointer items-center gap-3 rounded-control border border-border px-3.5 py-2.5 text-sm text-ink has-[:checked]:border-primary has-[:checked]:bg-primary-soft"
+                      >
+                        <input
+                          type="checkbox"
+                          className="size-4 accent-primary"
+                          checked={checked}
+                          onChange={() =>
+                            field.onChange(
+                              checked
+                                ? field.value.filter((m) => m !== method)
+                                : PAYMENT_METHODS.filter(
+                                    (m) => m === method || field.value.includes(m),
+                                  ),
+                            )
+                          }
+                        />
+                        {t(`payments.${method}`)}
+                      </label>
+                    )
+                  })}
+                </div>
+                {errors.enabled_payment_methods && (
+                  <p className="mt-1.5 text-sm text-danger">
+                    {fieldMessage(t, errors.enabled_payment_methods.message)}
+                  </p>
+                )}
+              </fieldset>
+            )}
           />
           <div className="flex justify-end">
             <Button type="submit" loading={isSubmitting} disabled={!isDirty}>

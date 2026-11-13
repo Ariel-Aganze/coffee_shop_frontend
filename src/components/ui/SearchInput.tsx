@@ -1,5 +1,5 @@
 import { Search, X } from 'lucide-react'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useId, useState, type KeyboardEventHandler } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { cn } from '@/lib/cn'
@@ -12,6 +12,7 @@ interface SearchInputProps {
   className?: string
   /** Wait this long after typing stops before reporting the value. */
   debounceMs?: number
+  onKeyDown?: KeyboardEventHandler<HTMLInputElement>
 }
 
 /** Search box that reports its value once typing pauses, with a clear button. */
@@ -22,6 +23,7 @@ export function SearchInput({
   placeholder,
   className,
   debounceMs = 300,
+  onKeyDown,
 }: SearchInputProps) {
   const { t } = useTranslation()
   const id = useId()
@@ -54,6 +56,7 @@ export function SearchInput({
         type="search"
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={onKeyDown}
         placeholder={placeholder ?? label}
         autoComplete="off"
         className="h-11 w-full rounded-control border border-border bg-surface pr-10 pl-10 text-base text-ink placeholder:text-ink-subtle focus:border-primary focus:ring-4 focus:ring-primary/15 focus:outline-none sm:text-sm [&::-webkit-search-cancel-button]:hidden"

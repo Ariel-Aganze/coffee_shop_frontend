@@ -50,6 +50,7 @@ export const fixtures = {
     date_format: 'YYYY-MM-DD',
     number_format: '1,234.56',
     cashier_max_discount_percent: '10.00',
+    enabled_payment_methods: ['cash', 'mobile_money', 'bank_card', 'bank_transfer'],
     updated_at: '2026-10-01T00:00:00Z',
   },
   branches: [

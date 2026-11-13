@@ -1470,6 +1470,12 @@ export interface components {
             /** @description True for owners and branch managers: any discount up to the line value. */
             unlimited: boolean;
         };
+        _CatalogPaymentMethod: {
+            code: components["schemas"]["PaymentMethodEnum"];
+            label: string;
+            /** @description Non-cash payments need a reference (transaction code, card slip…). */
+            needs_reference: boolean;
+        };
         _CatalogProduct: {
             category_id: number | null;
             description: string;
@@ -1801,6 +1807,8 @@ export interface components {
              */
             cashier_max_discount_percent: string;
             date_format: components["schemas"]["DateFormatEnum"];
+            /** @description Payment methods offered at the point of sale. */
+            enabled_payment_methods: components["schemas"]["PaymentMethodEnum"][];
             readonly id: number;
             language: components["schemas"]["LanguageEnum"];
             number_format: components["schemas"]["NumberFormatEnum"];
@@ -1883,6 +1891,7 @@ export interface components {
             readonly branch_name: string;
             readonly cashier: number;
             readonly cashier_display: string;
+            readonly cashier_name: string;
             /** Format: date-time */
             readonly closed_at: string | null;
             readonly closed_by: number | null;
@@ -2197,15 +2206,6 @@ export interface components {
             generated_at: string;
             results: components["schemas"]["StockRow"][];
         };
-        /**
-         * @description * `cash` - Cash
-         *     * `mobile_money` - Mobile Money
-         *     * `bank_card` - Bank Card
-         *     * `bank_transfer` - Bank Transfer
-         *     * `other` - Other
-         * @enum {string}
-         */
-        MethodEnum: "cash" | "mobile_money" | "bank_card" | "bank_transfer" | "other";
         Notification: {
             readonly branch: number | null;
             /** Format: date-time */
@@ -2503,6 +2503,8 @@ export interface components {
              */
             cashier_max_discount_percent?: string;
             date_format?: components["schemas"]["DateFormatEnum"];
+            /** @description Payment methods offered at the point of sale. */
+            enabled_payment_methods?: components["schemas"]["PaymentMethodEnum"][];
             language?: components["schemas"]["LanguageEnum"];
             number_format?: components["schemas"]["NumberFormatEnum"];
             timezone?: string;
@@ -2572,10 +2574,19 @@ export interface components {
         PaymentCreateRequest: {
             /** Format: decimal */
             amount: string;
-            method: components["schemas"]["MethodEnum"];
+            method: components["schemas"]["PaymentMethodEnum"];
             /** @default  */
             reference?: string;
         };
+        /**
+         * @description * `cash` - Cash
+         *     * `mobile_money` - Mobile Money
+         *     * `bank_card` - Bank Card
+         *     * `bank_transfer` - Bank Transfer
+         *     * `other` - Other
+         * @enum {string}
+         */
+        PaymentMethodEnum: "cash" | "mobile_money" | "bank_card" | "bank_transfer" | "other";
         PaymentRead: {
             /** Format: decimal */
             readonly amount: string;
@@ -2584,7 +2595,7 @@ export interface components {
             readonly currency_code: string;
             readonly id: number;
             readonly is_refund: boolean;
-            readonly method: components["schemas"]["MethodEnum"];
+            readonly method: components["schemas"]["PaymentMethodEnum"];
             readonly method_display: string;
             readonly received_by: number;
             readonly received_by_display: string;
@@ -2607,6 +2618,7 @@ export interface components {
             categories: components["schemas"]["_CatalogCategory"][];
             currency: components["schemas"]["_CatalogCurrency"];
             discount: components["schemas"]["_CatalogDiscount"];
+            payment_methods: components["schemas"]["_CatalogPaymentMethod"][];
             products: components["schemas"]["_CatalogProduct"][];
         };
         Product: {
@@ -2819,6 +2831,8 @@ export interface components {
             items: components["schemas"]["SaleItemInputRequest"][];
             /** @default  */
             note?: string;
+            /** @description Pay in the same request (recommended for the POS): the sale and its payments are saved together or not at all. Omit to pay later via /sales/{id}/payments/. */
+            payments?: components["schemas"]["PaymentCreateRequest"][];
         };
         SaleItemInputRequest: {
             /**
@@ -2845,6 +2859,11 @@ export interface components {
             unit_price: string;
         };
         SaleRead: {
+            /**
+             * Format: decimal
+             * @description Still to be paid: total minus payments (0 when fully paid).
+             */
+            readonly balance_due: string;
             readonly branch: number;
             readonly branch_name: string;
             readonly cancellation_reason: string;
@@ -2852,6 +2871,7 @@ export interface components {
             readonly cancelled_at: string | null;
             readonly cashier: number;
             readonly cashier_display: string;
+            readonly cashier_name: string;
             /** Format: date-time */
             readonly completed_at: string | null;
             /** Format: date-time */
@@ -2863,7 +2883,14 @@ export interface components {
             readonly id: number;
             readonly items: components["schemas"]["SaleItemRead"][];
             readonly note: string;
+            /**
+             * Format: decimal
+             * @description Sum of payments, refunds excluded.
+             */
+            readonly paid_amount: string;
             readonly payments: components["schemas"]["PaymentRead"][];
+            /** Format: decimal */
+            readonly refunded_amount: string;
             readonly status: components["schemas"]["SaleReadStatusEnum"];
             /** Format: decimal */
             readonly subtotal: string;
@@ -5499,14 +5526,22 @@ export interface operations {
     sales_list: {
         parameters: {
             query?: {
+                branch?: number;
+                /** @description User id of the cashier. */
+                cashier?: number;
+                /** @description Created on or after this day. */
+                from?: string;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                /** @description Transaction number contains. */
                 search?: string;
+                status?: "cancelled" | "completed" | "refunded";
+                /** @description Created on or before this day. */
+                to?: string;
             };
             header?: never;
             path?: never;

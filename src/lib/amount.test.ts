@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { amountSchema, marginRatio, normalizeAmount, toInputAmount } from './money'
+import { amountSchema, marginRatio, normalizeAmount, toInputAmount } from '@/lib/amount'
 
 describe('amount inputs', () => {
   it('accepts a comma as the decimal mark', () => {

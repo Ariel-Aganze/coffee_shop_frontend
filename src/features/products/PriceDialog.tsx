@@ -16,7 +16,7 @@ import { applyServerErrors, fieldMessage } from '@/lib/forms'
 import { isoToZonedInput, zonedInputToIso } from '@/lib/zonedTime'
 
 import { createPrice, productKeys, type Product } from './api'
-import { amountSchema, marginRatio, toInputAmount } from './money'
+import { amountSchema, marginRatio, toInputAmount } from '@/lib/amount'
 
 function buildSchema(decimals: number, timeZone: string) {
   return z

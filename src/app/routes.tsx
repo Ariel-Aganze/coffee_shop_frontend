@@ -5,16 +5,7 @@
  * and its title (handle.title, shown in the header and the browser tab).
  * Screens of later build steps render <ComingSoonPage step={n} />.
  */
-import {
-  Banknote,
-  Bell,
-  Boxes,
-  ChartColumn,
-  ReceiptText,
-  ScrollText,
-  ShoppingCart,
-  Wallet,
-} from 'lucide-react'
+import { Bell, Boxes, ChartColumn, ScrollText, Wallet } from 'lucide-react'
 import { lazy, type ReactNode } from 'react'
 import type { RouteObject } from 'react-router'
 
@@ -66,6 +57,19 @@ const CategoriesPage = lazy(() =>
 const ProductDetailPage = lazy(() =>
   import('@/features/products/ProductDetailPage').then((m) => ({ default: m.ProductDetailPage })),
 )
+const PosPage = lazy(() => import('@/features/pos/PosPage').then((m) => ({ default: m.PosPage })))
+const SalesPage = lazy(() =>
+  import('@/features/sales/SalesPage').then((m) => ({ default: m.SalesPage })),
+)
+const SaleDetailPage = lazy(() =>
+  import('@/features/sales/SaleDetailPage').then((m) => ({ default: m.SaleDetailPage })),
+)
+const CashPage = lazy(() =>
+  import('@/features/cash/CashPage').then((m) => ({ default: m.CashPage })),
+)
+const CashSessionPage = lazy(() =>
+  import('@/features/cash/CashSessionPage').then((m) => ({ default: m.CashSessionPage })),
+)
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
@@ -109,14 +113,11 @@ export const routes: RouteObject[] = [
             element: <AppLayout />,
             children: [
               page('/dashboard', 'nav.dashboard', <DashboardPage />, 'dashboard.view'),
-              page('/pos', 'nav.pos', <ComingSoonPage step={7} icon={ShoppingCart} />, 'pos.use'),
-              page(
-                '/sales',
-                'nav.sales',
-                <ComingSoonPage step={7} icon={ReceiptText} />,
-                'sales.view',
-              ),
-              page('/cash', 'nav.cash', <ComingSoonPage step={7} icon={Banknote} />, 'cash.view'),
+              page('/pos', 'nav.pos', <PosPage />, 'pos.use'),
+              page('/sales', 'nav.sales', <SalesPage />, 'sales.view'),
+              page('/sales/:saleId', 'nav.sales', <SaleDetailPage />, 'sales.view'),
+              page('/cash', 'nav.cash', <CashPage />, 'cash.view'),
+              page('/cash/:sessionId', 'nav.cash', <CashSessionPage />, 'cash.view'),
               page('/products', 'nav.products', <ProductsPage />, 'products.view'),
               page('/products/categories', 'categories.title', <CategoriesPage />, 'products.view'),
               page('/products/:productId', 'nav.products', <ProductDetailPage />, 'products.view'),

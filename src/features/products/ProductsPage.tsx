@@ -37,7 +37,7 @@ import {
   type ProductType,
 } from './api'
 import { CatalogTabs } from './CatalogTabs'
-import { marginRatio } from './money'
+import { marginRatio } from '@/lib/amount'
 import { ProductFormDialog } from './ProductFormDialog'
 import { ProductThumb } from './ProductThumb'
 

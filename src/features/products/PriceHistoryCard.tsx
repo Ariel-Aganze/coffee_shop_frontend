@@ -12,7 +12,7 @@ import { useCurrentUser } from '@/features/auth/useAuth'
 import { useFormat } from '@/features/business/useBusiness'
 
 import { fetchPrices, productKeys, type Product, type ProductPrice } from './api'
-import { marginRatio } from './money'
+import { marginRatio } from '@/lib/amount'
 import { PriceDialog } from './PriceDialog'
 
 type PriceState = 'scheduled' | 'current' | 'past'

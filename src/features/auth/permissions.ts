@@ -16,6 +16,7 @@ export type Permission =
   | 'sales.view'
   | 'sales.refund'
   | 'cash.view'
+  | 'cash.manage'
   | 'products.view'
   | 'products.manage'
   | 'products.availability'
@@ -41,6 +42,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'sales.view',
     'sales.refund',
     'cash.view',
+    'cash.manage',
     'products.view',
     'products.manage',
     'products.availability',
@@ -81,6 +83,7 @@ const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
     'sales.view',
     'sales.refund',
     'cash.view',
+    'cash.manage',
     'products.view',
     'products.availability',
     'inventory.view',
