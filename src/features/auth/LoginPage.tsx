@@ -22,7 +22,11 @@ const schema = z.object({
 })
 type FormValues = z.infer<typeof schema>
 
-function loginErrorMessage(error: unknown, t: ReturnType<typeof useTranslation>['t']): string {
+type LoginErrorKey = 'auth.invalidCredentials' | 'auth.accountDeactivated'
+
+// `t` is narrowed to the two keys used: typing it as the full TFunction makes
+// TypeScript expand every translation key ("excessively deep").
+function loginErrorMessage(error: unknown, t: (key: LoginErrorKey) => string): string {
   if (error instanceof ApiError) {
     if (error.status === 401) return t('auth.invalidCredentials')
     if (error.status === 403) return t('auth.accountDeactivated')
@@ -52,7 +56,7 @@ export function LoginPage() {
       const user = await login(values)
       navigate(safeNextPath(location.search) ?? homePathFor(user.role), { replace: true })
     } catch (error) {
-      setFormError(loginErrorMessage(error, t))
+      setFormError(loginErrorMessage(error, (key) => t(key)))
     }
   })
 

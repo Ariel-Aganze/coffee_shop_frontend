@@ -14,6 +14,9 @@ export type ProductCreateInput = Schema<'ProductCreateRequest'>
 export type ProductUpdateInput = Schema<'PatchedProductUpdateRequest'>
 export type PriceInput = Schema<'ProductPriceCreateRequest'>
 
+export type Unit = Schema<'UnitEnum'>
+export const UNITS = ['each', 'kg', 'g', 'l', 'ml', 'pack'] as const satisfies readonly Unit[]
+
 export const PRODUCT_TYPES = ['drink', 'food', 'packaged'] as const satisfies readonly ProductType[]
 
 export const productKeys = {

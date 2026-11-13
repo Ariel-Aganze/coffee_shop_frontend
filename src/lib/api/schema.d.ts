@@ -737,6 +737,46 @@ export interface paths {
         patch: operations["inventory_threshold_partial_update"];
         trace?: never;
     };
+    "/api/inventory/count/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Read-only list of stock levels with per-branch scoping.
+         *     Writes happen through dedicated actions.
+         */
+        post: operations["inventory_count_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/inventory/summary/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Read-only list of stock levels with per-branch scoping.
+         *     Writes happen through dedicated actions.
+         */
+        get: operations["inventory_summary_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/notifications/": {
         parameters: {
             query?: never;
@@ -2165,6 +2205,11 @@ export interface components {
             /** @default  */
             reference?: string;
         };
+        /**
+         * @description A product's stock at a branch. `unit_cost`/`stock_value` use the product's
+         *     current cost price (INV-013, costing method: latest cost price) and are
+         *     left out for roles that may not see costs.
+         */
         Inventory: {
             readonly branch: number;
             readonly branch_name: string;
@@ -2176,12 +2221,40 @@ export interface components {
              */
             readonly minimum_threshold: string;
             readonly product: number;
+            /** Format: uri */
+            readonly product_image: string | null;
+            readonly product_is_active: boolean;
             readonly product_name: string;
             readonly product_sku: string;
+            readonly product_type: string;
+            readonly product_unit: string;
             /** Format: decimal */
             readonly quantity: string;
+            /**
+             * Format: decimal
+             * @description Omitted for cashiers.
+             */
+            readonly stock_value?: string | null;
+            /**
+             * Format: decimal
+             * @description Omitted for cashiers.
+             */
+            readonly unit_cost?: string | null;
             /** Format: date-time */
             readonly updated_at: string;
+        };
+        InventorySummary: {
+            /** @description How stock is valued (INV-013): 'latest_cost'. */
+            costing_method: string;
+            /** @description At or below their minimum, but not empty. */
+            low_stock: number;
+            out_of_stock: number;
+            /**
+             * Format: decimal
+             * @description Omitted for cashiers.
+             */
+            total_value?: string | null;
+            tracked_products: number;
         };
         /**
          * @description * `en` - English
@@ -2545,6 +2618,17 @@ export interface components {
             product_type?: components["schemas"]["ProductTypeEnum"];
             /** @description Unique identifier within the business. */
             sku?: string;
+            /**
+             * @description Unit stock is counted in (INV-003).
+             *
+             *     * `each` - Each
+             *     * `kg` - Kilogram
+             *     * `g` - Gram
+             *     * `l` - Litre
+             *     * `ml` - Millilitre
+             *     * `pack` - Pack
+             */
+            unit?: components["schemas"]["UnitEnum"];
         };
         PatchedThresholdUpdateRequest: {
             /** Format: decimal */
@@ -2644,6 +2728,17 @@ export interface components {
             product_type: components["schemas"]["ProductTypeEnum"];
             /** @description Unique identifier within the business. */
             sku: string;
+            /**
+             * @description Unit stock is counted in (INV-003).
+             *
+             *     * `each` - Each
+             *     * `kg` - Kilogram
+             *     * `g` - Gram
+             *     * `l` - Litre
+             *     * `ml` - Millilitre
+             *     * `pack` - Pack
+             */
+            unit: components["schemas"]["UnitEnum"];
             /** Format: date-time */
             readonly updated_at: string;
         };
@@ -2676,13 +2771,24 @@ export interface components {
             product_type?: components["schemas"]["ProductTypeEnum"];
             /** @description Unique identifier within the business. */
             sku: string;
+            /**
+             * @description Unit stock is counted in (INV-003).
+             *
+             *     * `each` - Each
+             *     * `kg` - Kilogram
+             *     * `g` - Gram
+             *     * `l` - Litre
+             *     * `ml` - Millilitre
+             *     * `pack` - Pack
+             */
+            unit?: components["schemas"]["UnitEnum"];
         };
         ProductPrice: {
             /**
              * Format: decimal
-             * @description Cost of goods for this product (optional).
+             * @description Cost of goods for this product (optional). Omitted for cashiers.
              */
-            cost_price: string;
+            cost_price?: string;
             /** Format: date-time */
             readonly created_at: string;
             readonly created_by: number | null;
@@ -2733,6 +2839,17 @@ export interface components {
             product_type?: components["schemas"]["ProductTypeEnum"];
             /** @description Unique identifier within the business. */
             sku: string;
+            /**
+             * @description Unit stock is counted in (INV-003).
+             *
+             *     * `each` - Each
+             *     * `kg` - Kilogram
+             *     * `g` - Gram
+             *     * `l` - Litre
+             *     * `ml` - Millilitre
+             *     * `pack` - Pack
+             */
+            unit?: components["schemas"]["UnitEnum"];
         };
         Receipt: {
             branch: string;
@@ -3003,6 +3120,31 @@ export interface components {
         SetPasswordRequest: {
             new_password: string;
         };
+        StockCountLineRequest: {
+            /** Format: decimal */
+            counted_quantity: string;
+            product_id: number;
+        };
+        StockCountRequest: {
+            branch: number;
+            lines: components["schemas"]["StockCountLineRequest"][];
+            reason: string;
+        };
+        StockCountResult: {
+            /** @description Lines whose stock changed. */
+            adjusted: number;
+            lines: components["schemas"]["StockCountResultLine"][];
+        };
+        StockCountResultLine: {
+            /** Format: decimal */
+            counted: string;
+            /** Format: decimal */
+            difference: string;
+            /** Format: decimal */
+            expected: string;
+            product: number;
+            product_name: string;
+        };
         StockMovement: {
             readonly branch: number;
             readonly branch_name: string;
@@ -3017,9 +3159,11 @@ export interface components {
             readonly movement_type: components["schemas"]["StockMovementMovementTypeEnum"];
             readonly performed_by: number;
             readonly performed_by_display: string;
+            readonly performed_by_name: string;
             readonly product: number;
             readonly product_name: string;
             readonly product_sku: string;
+            readonly product_unit: string;
             /**
              * Format: decimal
              * @description Snapshot of the inventory balance after applying this movement.
@@ -3030,6 +3174,7 @@ export interface components {
             /** @description Optional external reference, e.g. PO number or sale number. */
             readonly reference: string;
             readonly sale: number | null;
+            readonly sale_number: string | null;
         };
         /**
          * @description * `purchase` - Purchase Received
@@ -3081,6 +3226,16 @@ export interface components {
         TokenRefreshRequest: {
             refresh: string;
         };
+        /**
+         * @description * `each` - Each
+         *     * `kg` - Kilogram
+         *     * `g` - Gram
+         *     * `l` - Litre
+         *     * `ml` - Millilitre
+         *     * `pack` - Pack
+         * @enum {string}
+         */
+        UnitEnum: "each" | "kg" | "g" | "l" | "ml" | "pack";
         UnreadCount: {
             unread: number;
         };
@@ -4646,13 +4801,18 @@ export interface operations {
     inventory_list: {
         parameters: {
             query?: {
-                /** @description Which field to use when ordering the results. */
-                ordering?: string;
+                /** @description Only active (true) or deactivated (false) products. */
+                active?: boolean;
+                branch?: number;
+                /** @description low: at/below minimum but not empty; out: empty; ok: above minimum. */
+                level?: "low" | "ok" | "out";
+                ordering?: "-quantity" | "name" | "quantity";
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
-                /** @description A search term. */
+                product?: number;
+                /** @description Product name or SKU contains. */
                 search?: string;
             };
             header?: never;
@@ -4717,6 +4877,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Inventory"];
+                };
+            };
+        };
+    };
+    inventory_count_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockCountRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["StockCountRequest"];
+                "multipart/form-data": components["schemas"]["StockCountRequest"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockCountResult"];
+                };
+            };
+        };
+    };
+    inventory_summary_retrieve: {
+        parameters: {
+            query?: {
+                /** @description One branch; omit for all you can see. */
+                branch?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventorySummary"];
                 };
             };
         };
@@ -5871,14 +6078,21 @@ export interface operations {
     stock_movements_list: {
         parameters: {
             query?: {
+                branch?: number;
+                /** @description On or after this day (shop time). */
+                from?: string;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
                 page?: number;
                 /** @description Number of results to return per page. */
                 page_size?: number;
+                product?: number;
                 /** @description A search term. */
                 search?: string;
+                /** @description On or before this day (shop time). */
+                to?: string;
+                type?: "adjustment" | "damaged" | "expired" | "purchase" | "return" | "sale" | "transfer_in" | "transfer_out";
             };
             header?: never;
             path?: never;

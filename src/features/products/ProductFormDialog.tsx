@@ -22,6 +22,7 @@ import {
   createProduct,
   fetchCategoryOptions,
   PRODUCT_TYPES,
+  UNITS,
   productKeys,
   updateProduct,
   type Product,
@@ -34,6 +35,7 @@ const FIELDS = [
   'sku',
   'category',
   'product_type',
+  'unit',
   'description',
   'initial_selling_price',
   'initial_cost_price',
@@ -50,6 +52,7 @@ function buildSchema(decimals: number) {
       .regex(/^[\w.-]+$/, 'products.skuInvalid'),
     category: z.string(),
     product_type: z.enum(PRODUCT_TYPES),
+    unit: z.enum(UNITS),
     description: z.string().trim().max(2000),
     initial_selling_price: amountSchema(decimals, { required: false }),
     initial_cost_price: amountSchema(decimals, { required: false }),
@@ -98,6 +101,7 @@ export function ProductFormDialog({ open, onClose, product }: ProductFormDialogP
       sku: product?.sku ?? '',
       category: product?.category ? String(product.category) : '',
       product_type: product?.product_type ?? 'drink',
+      unit: product?.unit ?? 'each',
       description: product?.description ?? '',
       initial_selling_price: '',
       initial_cost_price: '',
@@ -128,7 +132,7 @@ export function ProductFormDialog({ open, onClose, product }: ProductFormDialogP
       let saved: Product
       if (product) {
         const changes = Object.fromEntries(
-          (['name', 'sku', 'product_type', 'description'] as const)
+          (['name', 'sku', 'product_type', 'unit', 'description'] as const)
             .filter((f) => dirtyFields[f])
             .map((f) => [f, data[f]]),
         )
@@ -145,6 +149,7 @@ export function ProductFormDialog({ open, onClose, product }: ProductFormDialogP
             sku: data.sku,
             category,
             product_type: data.product_type,
+            unit: data.unit,
             description: data.description,
             initial_selling_price: data.initial_selling_price,
             ...(data.initial_cost_price ? { initial_cost_price: data.initial_cost_price } : {}),
@@ -236,7 +241,6 @@ export function ProductFormDialog({ open, onClose, product }: ProductFormDialogP
         </SelectField>
         <SelectField
           label={t('products.category')}
-          className="sm:col-span-2"
           hint={
             options.length === 0 && !categories.isPending
               ? t('products.noCategoriesHint')
@@ -249,6 +253,18 @@ export function ProductFormDialog({ open, onClose, product }: ProductFormDialogP
           {options.map((c) => (
             <option key={c.id} value={String(c.id)}>
               {c.is_active ? c.name : t('products.categoryInactive', { name: c.name })}
+            </option>
+          ))}
+        </SelectField>
+        <SelectField
+          label={t('products.unit')}
+          hint={t('products.unitHint')}
+          error={err('unit')}
+          {...register('unit')}
+        >
+          {UNITS.map((value) => (
+            <option key={value} value={value}>
+              {t(`units.long.${value}`)}
             </option>
           ))}
         </SelectField>

@@ -5,7 +5,7 @@
  * and its title (handle.title, shown in the header and the browser tab).
  * Screens of later build steps render <ComingSoonPage step={n} />.
  */
-import { Bell, Boxes, ChartColumn, ScrollText, Wallet } from 'lucide-react'
+import { Bell, ChartColumn, ScrollText, Wallet } from 'lucide-react'
 import { lazy, type ReactNode } from 'react'
 import type { RouteObject } from 'react-router'
 
@@ -70,6 +70,15 @@ const CashPage = lazy(() =>
 const CashSessionPage = lazy(() =>
   import('@/features/cash/CashSessionPage').then((m) => ({ default: m.CashSessionPage })),
 )
+const StockPage = lazy(() =>
+  import('@/features/inventory/StockPage').then((m) => ({ default: m.StockPage })),
+)
+const MovementsPage = lazy(() =>
+  import('@/features/inventory/MovementsPage').then((m) => ({ default: m.MovementsPage })),
+)
+const StockCountPage = lazy(() =>
+  import('@/features/inventory/StockCountPage').then((m) => ({ default: m.StockCountPage })),
+)
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
@@ -121,12 +130,9 @@ export const routes: RouteObject[] = [
               page('/products', 'nav.products', <ProductsPage />, 'products.view'),
               page('/products/categories', 'categories.title', <CategoriesPage />, 'products.view'),
               page('/products/:productId', 'nav.products', <ProductDetailPage />, 'products.view'),
-              page(
-                '/inventory',
-                'nav.inventory',
-                <ComingSoonPage step={8} icon={Boxes} />,
-                'inventory.view',
-              ),
+              page('/inventory', 'nav.inventory', <StockPage />, 'inventory.view'),
+              page('/inventory/movements', 'nav.inventory', <MovementsPage />, 'inventory.view'),
+              page('/inventory/count', 'stock.countPage', <StockCountPage />, 'inventory.manage'),
               page(
                 '/expenses',
                 'nav.expenses',

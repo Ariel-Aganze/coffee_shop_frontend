@@ -182,6 +182,7 @@ describe('adding a product', () => {
       sku: 'HD-MOC',
       category: 1,
       product_type: 'drink',
+      unit: 'each',
       description: '',
       initial_selling_price: '3200',
       initial_cost_price: '1100',
