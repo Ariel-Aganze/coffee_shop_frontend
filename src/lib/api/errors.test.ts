@@ -27,6 +27,40 @@ describe('parseErrorBody', () => {
   })
 })
 
+describe("parseErrorBody with the API's error envelope", () => {
+  it('uses the message for permission / not-found errors', () => {
+    expect(parseErrorBody({ error: 'Not found.', details: {} })).toEqual({
+      message: 'Not found.',
+      fieldErrors: {},
+    })
+  })
+
+  it('maps validation details to fields, summarising with the first real message', () => {
+    const parsed = parseErrorBody({
+      error: 'Validation error',
+      details: { old_password: ['Current password is incorrect.'] },
+    })
+    expect(parsed.fieldErrors).toEqual({ old_password: ['Current password is incorrect.'] })
+    expect(parsed.message).toBe('Current password is incorrect.') // never "Validation error"
+  })
+
+  it('prefers form-level messages in the envelope', () => {
+    const parsed = parseErrorBody({
+      error: 'Validation error',
+      details: { non_field_errors: ['Pick a branch first.'], branch: ['Required.'] },
+    })
+    expect(parsed.message).toBe('Pick a branch first.')
+    expect(parsed.fieldErrors).toEqual({ branch: ['Required.'] })
+  })
+
+  it('handles list details and plain business errors', () => {
+    expect(
+      parseErrorBody({ error: 'Validation error', details: ['Insufficient stock.'] }).message,
+    ).toBe('Insufficient stock.')
+    expect(parseErrorBody({ error: 'Invalid credentials.' }).message).toBe('Invalid credentials.')
+  })
+})
+
 describe('ApiError', () => {
   it('falls back to a human message per status', () => {
     expect(new ApiError(403, null).message).toMatch(/permission/)

@@ -19,9 +19,22 @@ const inputClass =
   'aria-invalid:border-danger aria-invalid:focus:ring-danger/15'
 
 /** Labelled input with hint and error message wired up for screen readers. */
-export function TextField({ label, hint, error, trailing, className, ...props }: TextFieldProps) {
+export function TextField({
+  label,
+  hint,
+  error,
+  trailing,
+  className,
+  'aria-describedby': extraDescribedBy,
+  ...props
+}: TextFieldProps) {
   const id = useId()
-  const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined
+  // Keep the field's own error/hint link and any extra description (e.g. a
+  // password checklist) — a caller's aria-describedby must not replace it.
+  const describedBy =
+    [error ? `${id}-error` : hint ? `${id}-hint` : undefined, extraDescribedBy]
+      .filter(Boolean)
+      .join(' ') || undefined
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <label htmlFor={id} className="text-sm font-medium text-ink">

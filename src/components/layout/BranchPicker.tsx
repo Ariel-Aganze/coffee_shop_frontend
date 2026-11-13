@@ -17,11 +17,15 @@ export function BranchPicker({ className }: { className?: string }) {
   const choices = branches.length + (canSelectAll ? 1 : 0)
   if (choices <= 1) {
     const only = branches[0]
+    // The outer element takes the caller's sizing/visibility classes (which may
+    // set `display`); the inner row keeps icon and name side by side.
     return only ? (
-      <span className={cn('flex items-center gap-2 text-sm text-ink-muted', className)}>
-        <Store className="size-4" aria-hidden="true" />
-        <span className="truncate">{only.name}</span>
-      </span>
+      <div className={className}>
+        <span className="flex items-center justify-end gap-2 text-sm text-ink-muted">
+          <Store className="size-4 shrink-0" aria-hidden="true" />
+          <span className="truncate">{only.name}</span>
+        </span>
+      </div>
     ) : null
   }
 

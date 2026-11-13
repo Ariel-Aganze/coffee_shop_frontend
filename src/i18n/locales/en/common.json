@@ -89,5 +89,73 @@
     "goHome": "Go to my home page",
     "noBusiness": "This account isn't linked to a business.",
     "notFoundCardTitle": "Nothing to see here"
+  },
+  "password": {
+    "requirements": "Password requirements",
+    "met": "done",
+    "notMet": "not yet",
+    "rules": {
+      "length": "At least {{min}} characters",
+      "notNumeric": "Not only numbers",
+      "notPersonal": "Not similar to your name, username or email",
+      "different": "Different from your current password"
+    },
+    "commonNote": "Very common passwords are refused too.",
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Confirm new password",
+    "currentRequired": "Enter your current password.",
+    "newInvalid": "Choose a password that meets all the requirements.",
+    "mismatch": "The two passwords don't match."
+  },
+  "forgot": {
+    "title": "Reset your password",
+    "subtitle": "Enter the email address on your account and we'll send you a link to choose a new password.",
+    "email": "Email address",
+    "emailInvalid": "Enter a valid email address.",
+    "submit": "Send reset link",
+    "sentTitle": "Check your email",
+    "sentBody": "If an account uses {{email}}, a link to choose a new password is on its way. It can take a few minutes — check your spam folder too.",
+    "noEmailHint": "No email on your account? Ask the business owner or your manager to reset your password.",
+    "tryAgain": "Use a different email",
+    "backToSignIn": "Back to sign in"
+  },
+  "reset": {
+    "title": "Choose a new password",
+    "subtitle": "Pick a password you don't use anywhere else.",
+    "submit": "Set new password",
+    "doneTitle": "Password updated",
+    "doneBody": "Your password has been changed and you've been signed out on every device. Sign in with your new password.",
+    "invalidTitle": "This link doesn't work",
+    "invalidBody": "Reset links work once and expire after a few days. Request a new one and use the latest email.",
+    "requestNew": "Request a new link"
+  },
+  "profile": {
+    "personalDetails": "Personal details",
+    "personalDetailsHint": "Your role and branches are managed by the business owner or your manager.",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "emailHint": "Used to send you password reset links.",
+    "phone": "Phone",
+    "save": "Save changes",
+    "saved": "Profile updated.",
+    "nothingChanged": "No changes to save.",
+    "username": "Username",
+    "role": "Role",
+    "branches": "Branches",
+    "allBranches": "All branches",
+    "noBranches": "No branch assigned",
+    "memberSince": "Member since",
+    "security": "Security",
+    "securityBody": "Changing your password signs you out on every other device.",
+    "changePassword": "Change password",
+    "phoneInvalid": "Use digits, spaces and + ( ) - only."
+  },
+  "changePassword": {
+    "subtitle": "You'll stay signed in here; every other device will be signed out.",
+    "submit": "Update password",
+    "cancel": "Cancel",
+    "success": "Password updated. You've been signed out on other devices."
   }
 }

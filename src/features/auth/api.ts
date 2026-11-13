@@ -1,4 +1,5 @@
 import { api, unwrap } from '@/lib/api/client'
+import { tokens } from '@/lib/api/tokens'
 import type { Schema } from '@/lib/api/types'
 
 export type CurrentUser = Schema<'User'>
@@ -22,4 +23,29 @@ export async function logoutOnServer(refresh: string | null): Promise<void> {
   } catch {
     // Already invalid or offline: the token is cleared locally regardless.
   }
+}
+
+// ---------------------------------------------------------------- self-service
+export type ProfileInput = Schema<'PatchedMeUpdateRequest'>
+
+export function requestPasswordReset(email: string) {
+  return unwrap(api.POST('/api/auth/password-reset/', { body: { email } }))
+}
+
+export function confirmPasswordReset(input: Schema<'PasswordResetConfirmRequest'>) {
+  return unwrap(api.POST('/api/auth/password-reset/confirm/', { body: input }))
+}
+
+/**
+ * Change the password. The server signs out every other device and returns
+ * fresh tokens for this one, which are stored so this session continues.
+ */
+export async function changePassword(input: Schema<'ChangePasswordRequest'>) {
+  const result = await unwrap(api.POST('/api/auth/change-password/', { body: input }))
+  tokens.set(result.access, result.refresh)
+  return result
+}
+
+export function updateProfile(input: ProfileInput) {
+  return unwrap(api.PATCH('/api/auth/me/', { body: input }))
 }

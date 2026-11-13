@@ -119,8 +119,8 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * @description GET /api/auth/me/
-         *     Returns the authenticated user's profile.
+         * @description GET   /api/auth/me/   the signed-in user's profile
+         *     PATCH /api/auth/me/   update own name, email and phone
          */
         get: operations["auth_me_retrieve"];
         put?: never;
@@ -128,7 +128,11 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * @description GET   /api/auth/me/   the signed-in user's profile
+         *     PATCH /api/auth/me/   update own name, email and phone
+         */
+        patch: operations["auth_me_partial_update"];
         trace?: never;
     };
     "/api/auth/password-reset/": {
@@ -2319,6 +2323,12 @@ export interface components {
             previous: string | null;
             results: components["schemas"]["User"][];
         };
+        /** @description Response of change-password: fresh tokens for this device (others are signed out). */
+        PasswordChanged: {
+            access: string;
+            detail: string;
+            refresh: string;
+        };
         PasswordResetConfirmRequest: {
             new_password: string;
             token: string;
@@ -2367,6 +2377,18 @@ export interface components {
             description?: string;
             is_active?: boolean;
             name?: string;
+        };
+        /**
+         * @description PATCH /api/auth/me/ — a user edits their OWN contact details. Role,
+         *     branches and active status are deliberately not editable here (those are
+         *     managed by the owner / managers through /api/auth/users/).
+         */
+        PatchedMeUpdateRequest: {
+            /** Email address */
+            email?: string;
+            first_name?: string;
+            last_name?: string;
+            phone?: string;
         };
         /**
          * @description Updates product metadata only. To change price, use the
@@ -3088,7 +3110,15 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Detail"];
+                    "application/json": components["schemas"]["PasswordChanged"];
+                };
+            };
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Error"];
                 };
             };
         };
@@ -3182,6 +3212,31 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["User"];
+                };
+            };
+        };
+    };
+    auth_me_partial_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["PatchedMeUpdateRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["PatchedMeUpdateRequest"];
+                "multipart/form-data": components["schemas"]["PatchedMeUpdateRequest"];
+            };
+        };
         responses: {
             200: {
                 headers: {

@@ -2,12 +2,12 @@
  * One error type for every failed API call, with a message that is safe and
  * useful to show to people, plus per-field messages for forms.
  *
- * Django REST Framework error bodies come in a few shapes:
- *   { "detail": "…" }                     permission / not found / auth
- *   { "error": "…" }                      this API's own business errors
- *   { "field": ["msg", …], … }            validation errors per field
- *   { "non_field_errors": ["msg"] }       validation errors for the whole form
- *   ["msg", …]                            ValidationError raised with a list
+ * This API wraps every error in one envelope (apps/accounts/exceptions.py):
+ *   { "error": "Not found.", "details": {} }                 permission / not found / auth
+ *   { "error": "Validation error", "details": { "field": ["msg"], "non_field_errors": ["msg"] } }
+ *   { "error": "Validation error", "details": ["msg"] }      ValidationError raised with a list
+ *   { "error": "Insufficient stock…" }                       business errors raised by views
+ * Plain DRF shapes ({ "detail" }, { "field": [...] }, ["msg"]) are understood too.
  */
 export type FieldErrors = Record<string, string[]>
 
@@ -55,12 +55,33 @@ function asMessages(value: unknown): string[] {
   return []
 }
 
+/** The generic summary the API puts in `error` for any validation failure. */
+const GENERIC_VALIDATION = 'Validation error'
+
 export function parseErrorBody(body: unknown): { message?: string; fieldErrors: FieldErrors } {
   if (typeof body === 'string' && body.trim()) return { message: body, fieldErrors: {} }
   if (Array.isArray(body)) return { message: asMessages(body)[0], fieldErrors: {} }
   if (!body || typeof body !== 'object') return { fieldErrors: {} }
 
   const record = body as Record<string, unknown>
+
+  // The API's envelope: { error, details }.
+  if ('details' in record && typeof record.error === 'string') {
+    const details = record.details
+    const hasDetails =
+      (Array.isArray(details) && details.length > 0) ||
+      (!!details && typeof details === 'object' && Object.keys(details).length > 0)
+    if (hasDetails) {
+      const parsed = parseErrorBody(details)
+      const useSummary = record.error !== GENERIC_VALIDATION
+      return {
+        message: useSummary ? record.error : parsed.message,
+        fieldErrors: parsed.fieldErrors,
+      }
+    }
+    return { message: record.error, fieldErrors: {} }
+  }
+
   for (const key of ['detail', 'error'] as const) {
     const [first] = asMessages(record[key])
     if (first) return { message: first, fieldErrors: {} }

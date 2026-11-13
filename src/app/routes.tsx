@@ -12,12 +12,10 @@ import {
   Building2,
   ChartColumn,
   Coffee,
-  KeyRound,
   ReceiptText,
   ScrollText,
   Settings,
   ShoppingCart,
-  UserRound,
   Users,
   Wallet,
 } from 'lucide-react'
@@ -35,10 +33,21 @@ import {
 import type { Permission } from '@/features/auth/permissions'
 import { ComingSoonPage } from '@/pages/ComingSoonPage'
 import { NotFoundPage, RouteErrorPage } from '@/pages/ErrorPages'
-import { PublicComingSoonPage } from '@/pages/PublicComingSoonPage'
 
 const LoginPage = lazy(() =>
   import('@/features/auth/LoginPage').then((m) => ({ default: m.LoginPage })),
+)
+const ForgotPasswordPage = lazy(() =>
+  import('@/features/auth/ForgotPasswordPage').then((m) => ({ default: m.ForgotPasswordPage })),
+)
+const ResetPasswordPage = lazy(() =>
+  import('@/features/auth/ResetPasswordPage').then((m) => ({ default: m.ResetPasswordPage })),
+)
+const ProfilePage = lazy(() =>
+  import('@/features/account/ProfilePage').then((m) => ({ default: m.ProfilePage })),
+)
+const ChangePasswordPage = lazy(() =>
+  import('@/features/account/ChangePasswordPage').then((m) => ({ default: m.ChangePasswordPage })),
 )
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
@@ -69,7 +78,9 @@ export const routes: RouteObject[] = [
         element: <RedirectIfAuthenticated />,
         children: [{ path: '/login', element: <LoginPage /> }],
       },
-      { path: '/forgot-password', element: <PublicComingSoonPage step={3} /> },
+      // Usable signed in or out (e.g. following an emailed link on a shared device).
+      { path: '/forgot-password', element: <ForgotPasswordPage /> },
+      { path: '/reset-password', element: <ResetPasswordPage /> },
       {
         element: <RequireAuth />,
         children: [
@@ -130,12 +141,8 @@ export const routes: RouteObject[] = [
                 'audit.view',
               ),
               page('/notifications', 'nav.notifications', <ComingSoonPage step={12} icon={Bell} />),
-              page('/profile', 'nav.profile', <ComingSoonPage step={3} icon={UserRound} />),
-              page(
-                '/profile/password',
-                'header.changePassword',
-                <ComingSoonPage step={3} icon={KeyRound} />,
-              ),
+              page('/profile', 'nav.profile', <ProfilePage />),
+              page('/profile/password', 'header.changePassword', <ChangePasswordPage />),
               page('*', 'errors.notFoundTitle', <NotFoundPage />),
             ],
           },
