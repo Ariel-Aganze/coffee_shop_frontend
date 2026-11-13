@@ -778,7 +778,11 @@
     "explanationRequired": "Explain the difference.",
     "overHint": "There is more cash than expected. Say why if you know.",
     "shortHint": "Cash is missing. Say what happened.",
-    "closed": "Drawer closed."
+    "closed": "Drawer closed.",
+    "status": {
+      "open": "Open",
+      "closed": "Closed"
+    }
   },
   "units": {
     "long": {
@@ -994,5 +998,145 @@
     "count_other": "{{count}} expenses",
     "emptyBody": "Group costs into categories like Rent, Utilities or Supplies so reports can break them down.",
     "deactivateBody": "It won't be offered for new expenses. Expenses already recorded keep it, and you can reactivate it at any time."
+  },
+  "reports": {
+    "ownSales": "Sales reports show the sales you made.",
+    "sections": {
+      "sales": "Sales",
+      "inventory": "Inventory",
+      "finance": "Finance & cash"
+    },
+    "list": {
+      "sales-summary": {
+        "title": "Sales summary",
+        "description": "Total and net sales, transactions, average sale and unpaid sales."
+      },
+      "sales-over-time": {
+        "title": "Sales by day, week or month",
+        "description": "Daily, weekly and monthly sales for any period."
+      },
+      "sales-by-branch": {
+        "title": "Sales by branch",
+        "description": "Each branch’s sales and refunds."
+      },
+      "sales-by-product": {
+        "title": "Product performance",
+        "description": "Quantity and revenue per product."
+      },
+      "sales-by-cashier": {
+        "title": "Sales by employee",
+        "description": "Each cashier’s transactions and sales."
+      },
+      "sales-by-payment-method": {
+        "title": "Payment methods",
+        "description": "Cash, mobile money, card and transfers, collected and refunded."
+      },
+      "current-stock": {
+        "title": "Stock and valuation",
+        "description": "What’s on hand at each branch and what it’s worth at cost."
+      },
+      "low-stock": {
+        "title": "Low stock",
+        "description": "Products at or below their minimum."
+      },
+      "stock-movements": {
+        "title": "Stock movements",
+        "description": "Deliveries, losses, corrections and sales consumption."
+      },
+      "financial-summary": {
+        "title": "Profit summary",
+        "description": "Revenue, cost of goods, gross profit and operating result."
+      },
+      "expenses": {
+        "title": "Expenses",
+        "description": "By category, branch or month, and by approval status."
+      },
+      "cash-reconciliation": {
+        "title": "Cash reconciliation",
+        "description": "Every drawer: expected vs counted cash and differences."
+      },
+      "branch-comparison": {
+        "title": "Branch comparison",
+        "description": "Branches side by side: revenue, sales and expenses."
+      }
+    },
+    "columns": {
+      "net_sales": "Net sales",
+      "total_sales": "Sales before refunds",
+      "refunds_total": "Refunds",
+      "transactions": "Transactions",
+      "average_transaction_value": "Average sale",
+      "unpaid_sales_count": "Unpaid sales",
+      "unpaid_sales_total": "Unpaid amount",
+      "period_start": "Period",
+      "branch_name": "Branch",
+      "product_name": "Product",
+      "orders": "Sales with it",
+      "quantity_sold": "Quantity sold",
+      "revenue": "Revenue",
+      "cashier_name": "Cashier",
+      "method": "Method",
+      "count": "Count",
+      "collected": "Collected",
+      "refunded": "Refunded",
+      "net": "Net",
+      "quantity": "On hand",
+      "minimum_threshold": "Minimum",
+      "unit_cost": "Unit cost",
+      "stock_value": "Value",
+      "created_at": "Date",
+      "movement_type": "Type",
+      "delta": "Change",
+      "quantity_after": "Stock after",
+      "reason": "Reason",
+      "performed_by": "By",
+      "gross_sales": "Sales before refunds",
+      "refunds": "Refunds",
+      "cost_of_goods_sold": "Cost of goods sold",
+      "gross_profit": "Gross profit",
+      "operating_expenses": "Expenses (approved)",
+      "operating_result": "Operating result",
+      "group": "Group",
+      "status": "Status",
+      "total": "Total",
+      "opened_at": "Opened",
+      "cashier": "Cashier",
+      "opening_balance": "Opening float",
+      "expected_cash": "Expected",
+      "actual_cash": "Counted",
+      "difference": "Difference",
+      "discrepancy_explanation": "Explanation",
+      "expenses": "Expenses"
+    },
+    "backToList": "All reports",
+    "notFoundTitle": "Report not available",
+    "notFoundBody": "It doesn’t exist, or your role can’t open it.",
+    "allBranches": "All branches",
+    "allBranchesCompared": "All branches compared",
+    "asOf": "As of {{when}}",
+    "exportCsv": "Excel / CSV",
+    "exportPdf": "PDF",
+    "downloaded": "{{name}} downloaded.",
+    "groupBy": "Group by",
+    "salesGroups": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "expenseGroups": {
+      "category": "Category",
+      "branch": "Branch",
+      "month": "Month"
+    },
+    "movementFilters": {
+      "losses": "Damaged & expired",
+      "purchases": "Purchases received",
+      "corrections": "Stock count corrections"
+    },
+    "severalCurrencies": "This period has sales in more than one currency: amounts are shown per currency and not added together.",
+    "emptyTitle": "Nothing to report",
+    "emptyBody": "There’s no data for these filters.",
+    "total": "Total",
+    "approvedTotal": "Approved expenses in total: {{total}}"
   }
 }

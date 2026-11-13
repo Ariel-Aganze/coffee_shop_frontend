@@ -1190,6 +1190,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/reports/sales/over-time/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["reports_sales_over_time_retrieve"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/reports/sales/summary/": {
         parameters: {
             query?: never;
@@ -2072,6 +2088,17 @@ export interface components {
             /** Format: decimal */
             quantity: string;
             sku: string;
+            /**
+             * Format: decimal
+             * @description quantity × unit_cost; omitted for roles that can't see costs. Omitted for roles that can't see costs.
+             */
+            stock_value?: string | null;
+            unit: string;
+            /**
+             * Format: decimal
+             * @description Latest cost price; omitted for roles that can't see costs. Omitted for roles that can't see costs.
+             */
+            unit_cost?: string | null;
         };
         Dashboard: {
             branch_performance: components["schemas"]["_DashBranchPerformance"];
@@ -2165,13 +2192,22 @@ export interface components {
         };
         ExpensesReport: {
             approved_totals: components["schemas"]["CurrencyTotal"][];
+            group: components["schemas"]["ExpensesReportGroupEnum"];
             period: components["schemas"]["Period"];
             results: components["schemas"]["ExpensesRow"][];
         };
+        /**
+         * @description * `category` - category
+         *     * `branch` - branch
+         *     * `month` - month
+         * @enum {string}
+         */
+        ExpensesReportGroupEnum: "category" | "branch" | "month";
         ExpensesRow: {
-            category: string;
             count: number;
             currency_code: string;
+            /** @description Category name, branch name or YYYY-MM, per `group`. */
+            group: string;
             status: string;
             /** Format: decimal */
             total: string;
@@ -3139,6 +3175,34 @@ export interface components {
             revenue: string;
             sku: string;
         };
+        SalesOverTimeReport: {
+            group: components["schemas"]["SalesOverTimeReportGroupEnum"];
+            period: components["schemas"]["Period"];
+            results: components["schemas"]["SalesOverTimeRow"][];
+        };
+        /**
+         * @description * `day` - day
+         *     * `week` - week
+         *     * `month` - month
+         * @enum {string}
+         */
+        SalesOverTimeReportGroupEnum: "day" | "week" | "month";
+        SalesOverTimeRow: {
+            /** Format: decimal */
+            average_transaction_value: string;
+            currency_code: string;
+            /** Format: decimal */
+            net_sales: string;
+            /** Format: date */
+            period_end: string;
+            /** Format: date */
+            period_start: string;
+            /** Format: decimal */
+            refunds_total: string;
+            /** Format: decimal */
+            total_sales: string;
+            transactions: number;
+        };
         SalesSummaryReport: {
             period: components["schemas"]["Period"];
             results: components["schemas"]["SalesSummaryRow"][];
@@ -3259,6 +3323,7 @@ export interface components {
             reason: string;
             reference: string;
             sku: string;
+            unit: string;
         };
         StockRow: {
             branch_id: number;
@@ -3270,6 +3335,7 @@ export interface components {
             /** Format: decimal */
             quantity: string;
             sku: string;
+            unit: string;
         };
         TokenRefresh: {
             readonly access: string;
@@ -5572,6 +5638,8 @@ export interface operations {
                 export?: "csv" | "pdf";
                 /** @description Start date (YYYY-MM-DD), inclusive, business timezone. */
                 from?: string;
+                /** @description Group rows by. Default: category. */
+                group?: "branch" | "category" | "month";
                 /** @description Filter by status. */
                 status?: string;
                 /** @description End date (YYYY-MM-DD), inclusive. Defaults: from=to=today. */
@@ -5685,7 +5753,7 @@ export interface operations {
                 product?: number;
                 /** @description End date (YYYY-MM-DD), inclusive. Defaults: from=to=today. */
                 to?: string;
-                /** @description Movement type, e.g. sale, purchase, adjustment. */
+                /** @description Movement type(s), comma-separated, e.g. damaged,expired. */
                 type?: string;
             };
             header?: never;
@@ -5817,6 +5885,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SalesByProductReport"];
+                };
+            };
+        };
+    };
+    reports_sales_over_time_retrieve: {
+        parameters: {
+            query?: {
+                /** @description Limit to one branch (403 if not yours). */
+                branch?: number;
+                /** @description Download the report as CSV or PDF instead of JSON. */
+                export?: "csv" | "pdf";
+                /** @description Start date (YYYY-MM-DD), inclusive, business timezone. */
+                from?: string;
+                /** @description Bucket size. Default: day. */
+                group?: "day" | "month" | "week";
+                /** @description End date (YYYY-MM-DD), inclusive. Defaults: from=to=today. */
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description JSON, or a CSV/PDF file when ?export= is set. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOverTimeReport"];
                 };
             };
         };

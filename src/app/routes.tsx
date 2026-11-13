@@ -5,7 +5,7 @@
  * and its title (handle.title, shown in the header and the browser tab).
  * Screens of later build steps render <ComingSoonPage step={n} />.
  */
-import { Bell, ChartColumn, ScrollText } from 'lucide-react'
+import { Bell, ScrollText } from 'lucide-react'
 import { lazy, type ReactNode } from 'react'
 import type { RouteObject } from 'react-router'
 
@@ -90,6 +90,12 @@ const ExpenseCategoriesPage = lazy(() =>
 const ExpenseDetailPage = lazy(() =>
   import('@/features/expenses/ExpenseDetailPage').then((m) => ({ default: m.ExpenseDetailPage })),
 )
+const ReportsPage = lazy(() =>
+  import('@/features/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+)
+const ReportPage = lazy(() =>
+  import('@/features/reports/ReportPage').then((m) => ({ default: m.ReportPage })),
+)
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
@@ -152,12 +158,8 @@ export const routes: RouteObject[] = [
                 'expenses.view',
               ),
               page('/expenses/:expenseId', 'nav.expenses', <ExpenseDetailPage />, 'expenses.view'),
-              page(
-                '/reports',
-                'nav.reports',
-                <ComingSoonPage step={11} icon={ChartColumn} />,
-                'reports.view',
-              ),
+              page('/reports', 'nav.reports', <ReportsPage />, 'reports.view'),
+              page('/reports/:slug', 'nav.reports', <ReportPage />, 'reports.view'),
               page('/staff', 'nav.staff', <StaffPage />, 'staff.manage'),
               page('/branches', 'nav.branches', <BranchesPage />, 'branches.view'),
               page('/settings', 'nav.settings', <SettingsPage />, 'settings.manage'),
