@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseEnv } from './env'
+import { apiOriginFrom, parseEnv } from './env'
 
 const base = { MODE: 'test', DEV: false, PROD: false }
 
@@ -20,5 +20,16 @@ describe('parseEnv', () => {
     expect(() => parseEnv({ ...base, VITE_API_BASE_URL: 'api.example.com' })).toThrow(
       /VITE_API_BASE_URL: must be a path like \/api/,
     )
+  })
+
+  it('requires the base URL to end with /api', () => {
+    expect(() => parseEnv({ ...base, VITE_API_BASE_URL: 'https://api.example.com' })).toThrow(
+      /must end with \/api/,
+    )
+  })
+
+  it('derives the API origin used by the typed client', () => {
+    expect(apiOriginFrom('/api')).toBe('')
+    expect(apiOriginFrom('https://api.example.com/api')).toBe('https://api.example.com')
   })
 })

@@ -1,0 +1,93 @@
+{
+  "app": {
+    "skipToContent": "Skip to main content",
+    "loading": "Loading…",
+    "brewing": "Brewing your data…"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "sections": {
+      "overview": "Overview",
+      "sales": "Sales",
+      "stock": "Catalogue & stock",
+      "finance": "Finance",
+      "admin": "Administration"
+    },
+    "dashboard": "Dashboard",
+    "pos": "Point of sale",
+    "sales": "Sales history",
+    "cash": "Cash sessions",
+    "products": "Products",
+    "inventory": "Inventory",
+    "expenses": "Expenses",
+    "reports": "Reports",
+    "staff": "Staff",
+    "branches": "Branches",
+    "settings": "Settings",
+    "audit": "Audit log",
+    "notifications": "Notifications",
+    "profile": "My profile"
+  },
+  "header": {
+    "branch": "Branch",
+    "allBranches": "All branches",
+    "notifications": "Notifications",
+    "notificationsUnread_one": "{{count}} unread notification",
+    "notificationsUnread_other": "{{count}} unread notifications",
+    "userMenu": "Account menu",
+    "profile": "My profile",
+    "changePassword": "Change password",
+    "signOut": "Sign out"
+  },
+  "auth": {
+    "signInTitle": "Welcome back",
+    "signInSubtitle": "Sign in to manage your coffee shop.",
+    "username": "Username",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "signIn": "Sign in",
+    "signingIn": "Signing in…",
+    "forgotPassword": "Forgot password?",
+    "usernameRequired": "Enter your username.",
+    "passwordRequired": "Enter your password.",
+    "invalidCredentials": "That username and password don't match.",
+    "accountDeactivated": "This account has been deactivated. Ask your manager or the business owner.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "signedOut": "You've been signed out."
+  },
+  "pagination": {
+    "label": "Pagination",
+    "showing": "Showing {{from}}–{{to}} of {{count}}",
+    "noResults": "No results",
+    "pageOf": "Page {{page}} of {{pages}}",
+    "previous": "Previous page",
+    "next": "Next page",
+    "goToPage": "Go to page {{page}}",
+    "perPage": "Rows per page"
+  },
+  "comingSoon": {
+    "title": "Coming in step {{step}}",
+    "body": "This screen is part of the build plan and will be built in step {{step}}."
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}",
+    "today": "Today is {{date}}",
+    "scopeAll": "Showing all branches",
+    "scopeOne": "Showing {{branch}}"
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The page you're looking for doesn't exist or was moved.",
+    "forbiddenTitle": "No access",
+    "forbiddenBody": "Your role doesn't include this part of Caffio. If you need it, ask the business owner.",
+    "crashTitle": "Something went wrong",
+    "crashBody": "An unexpected error stopped this page. Reloading usually fixes it.",
+    "reload": "Reload page",
+    "goHome": "Go to my home page",
+    "noBusiness": "This account isn't linked to a business.",
+    "notFoundCardTitle": "Nothing to see here"
+  }
+}

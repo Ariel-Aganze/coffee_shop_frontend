@@ -9,10 +9,13 @@ const schema = z.object({
   VITE_API_BASE_URL: z
     .string()
     .min(1)
+    .transform((v) => v.replace(/\/+$/, ''))
     .refine((v) => v.startsWith('/') || /^https?:\/\//.test(v), {
       message: 'must be a path like /api or an absolute http(s) URL',
     })
-    .transform((v) => v.replace(/\/+$/, '')),
+    .refine((v) => v.endsWith('/api'), {
+      message: 'must end with /api (API paths are /api/…)',
+    }),
   VITE_APP_NAME: z.string().min(1).default('Caffio'),
   MODE: z.string(),
   DEV: z.boolean(),
@@ -32,7 +35,28 @@ export function parseEnv(source: Record<string, unknown>): Env {
   return result.data
 }
 
+/**
+ * Server origin for the typed API client: the generated API paths already
+ * start with /api, so '/api' → '' (same origin) and
+ * 'https://api.example.com/api' → 'https://api.example.com'.
+ */
+export function apiOriginFrom(apiBaseUrl: string): string {
+  return apiBaseUrl.slice(0, -'/api'.length)
+}
+
 export const env = parseEnv({
   VITE_API_BASE_URL: '/api', // default when not set
   ...import.meta.env,
 })
+
+/**
+ * Absolute server origin for API requests. A same-origin deployment ('/api')
+ * resolves against the page's own origin, because `Request` objects need
+ * absolute URLs outside the browser (e.g. in tests).
+ */
+export const apiOrigin = apiOriginFrom(env.VITE_API_BASE_URL) || (globalThis.location?.origin ?? '')
+
+/** Absolute URL for an API path such as '/api/auth/token/refresh/'. */
+export function apiUrl(path: `/api/${string}`): string {
+  return `${apiOrigin}${path}`
+}

@@ -83,6 +83,22 @@ src/
 
 Import with the `@/` alias (`@/components/brand/Logo`), not long relative paths.
 
+## How the app is wired
+
+| Concern          | Where                                    | Notes                                                                                                        |
+| ---------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| API calls        | `src/lib/api/client.ts`                  | `unwrap(api.GET('/api/…', { params }))` — fully typed; throws `ApiError`                                     |
+| Errors           | `src/lib/api/errors.ts`                  | `ApiError.message` is safe to show; `fieldErrors` for forms                                                  |
+| Session          | `src/lib/api/tokens.ts`, `session.ts`    | Access token in memory, refresh token in localStorage; automatic renewal on 401 (one at a time, across tabs) |
+| Signed-in user   | `useAuth()` / `useCurrentUser()`         | `status`, `login`, `logout`, sign-out reason                                                                 |
+| Role rules       | `src/features/auth/permissions.ts`       | `can(role, 'pos.use')` — mirrors the backend; UI only, the API enforces                                      |
+| Routes & guards  | `src/app/routes.tsx`                     | Every page declares its title and permission; lazy-loaded                                                    |
+| Business context | `useBusiness()`, `useFormat()`           | Settings, branches, selected branch (`branchId`, null = all)                                                 |
+| Formatting       | `src/lib/format.ts`                      | Money from decimal strings, business timezone & formats                                                      |
+| Server data      | TanStack Query                           | 4xx not retried; failed mutations toast unless `meta.silentError`                                            |
+| Text             | `src/i18n/locales/en/common.json`        | Type-checked keys: `t('nav.dashboard')`                                                                      |
+| Lists            | `usePaginationParams()` + `<Pagination>` | `?page=&page_size=` in the URL                                                                               |
+
 ## Conventions
 
 - **Design tokens.** Colours, radii and shadows live in `src/styles/index.css` (`@theme`).

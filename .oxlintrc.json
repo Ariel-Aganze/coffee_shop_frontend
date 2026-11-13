@@ -34,7 +34,7 @@
     "import/no-unassigned-import": [
       "warn",
       {
-        "allow": ["**/*.css", "@testing-library/jest-dom/vitest"]
+        "allow": ["**/*.css", "@testing-library/jest-dom/vitest", "@/i18n", "i18next"]
       }
     ]
   },
@@ -44,6 +44,12 @@
       "files": ["src/components/feedback/Loader.tsx"],
       "rules": {
         "jsx-a11y/prefer-tag-over-role": "off"
+      }
+    },
+    {
+      "files": ["src/app/routes.tsx"],
+      "rules": {
+        "react/only-export-components": "off"
       }
     }
   ]

@@ -2015,7 +2015,7 @@ export interface components {
             /** Format: date-time */
             readonly updated_at: string;
         };
-        LoginRequestRequest: {
+        LoginCredentialsRequest: {
             password: string;
             username: string;
         };
@@ -3102,9 +3102,9 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["LoginRequestRequest"];
-                "application/x-www-form-urlencoded": components["schemas"]["LoginRequestRequest"];
-                "multipart/form-data": components["schemas"]["LoginRequestRequest"];
+                "application/json": components["schemas"]["LoginCredentialsRequest"];
+                "application/x-www-form-urlencoded": components["schemas"]["LoginCredentialsRequest"];
+                "multipart/form-data": components["schemas"]["LoginCredentialsRequest"];
             };
         };
         responses: {
