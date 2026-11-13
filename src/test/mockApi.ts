@@ -144,5 +144,7 @@ export function shellHandlers(user: ReturnType<typeof fixtures.user>) {
     'GET /api/branches/': () =>
       json({ count: visibleBranches.length, next: null, previous: null, results: visibleBranches }),
     'GET /api/notifications/unread-count/': () => json({ unread: 3 }),
+    // Shell tests land on the dashboard; tests about it supply real data.
+    'GET /api/reports/dashboard/': () => json({ error: 'Not mocked', details: {} }, 503),
   } satisfies Record<string, Handler>
 }

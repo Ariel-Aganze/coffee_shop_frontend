@@ -41,7 +41,11 @@
   "ignorePatterns": ["dist", "coverage", "src/lib/api/schema.d.ts"],
   "overrides": [
     {
-      "files": ["src/components/feedback/Loader.tsx", "src/components/feedback/ListStates.tsx"],
+      "files": [
+        "src/components/feedback/Loader.tsx",
+        "src/components/feedback/ListStates.tsx",
+        "src/features/dashboard/DashboardPage.tsx"
+      ],
       "rules": {
         "jsx-a11y/prefer-tag-over-role": "off"
       }

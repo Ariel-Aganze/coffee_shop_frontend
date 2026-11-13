@@ -52,3 +52,12 @@ if (typeof URL.createObjectURL !== 'function') {
   URL.createObjectURL = () => 'blob:preview'
   URL.revokeObjectURL = () => {}
 }
+
+// jsdom has no ResizeObserver (Recharts' ResponsiveContainer uses it).
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  globalThis.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}

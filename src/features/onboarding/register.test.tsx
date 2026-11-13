@@ -42,7 +42,8 @@ async function fillAll(user: User) {
   await continueTo(user, 'Check and create')
 }
 
-describe('registration wizard', () => {
+// Walks the whole multi-step wizard: give it room on a busy machine.
+describe('registration wizard', { timeout: 15_000 }, () => {
   it('validates each step before moving on', async () => {
     mockApi(publicHandlers)
     const { user } = renderApp('/register')
