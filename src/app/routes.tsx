@@ -3,9 +3,7 @@
  *
  * Every signed-in page declares its required permission (RequirePermission)
  * and its title (handle.title, shown in the header and the browser tab).
- * Screens of later build steps render <ComingSoonPage step={n} />.
  */
-import { Bell, ScrollText } from 'lucide-react'
 import { lazy, type ReactNode } from 'react'
 import type { RouteObject } from 'react-router'
 
@@ -18,7 +16,6 @@ import {
   RequirePermission,
 } from '@/features/auth/guards'
 import type { Permission } from '@/features/auth/permissions'
-import { ComingSoonPage } from '@/pages/ComingSoonPage'
 import { NotFoundPage, RouteErrorPage } from '@/pages/ErrorPages'
 
 const LoginPage = lazy(() =>
@@ -96,6 +93,14 @@ const ReportsPage = lazy(() =>
 const ReportPage = lazy(() =>
   import('@/features/reports/ReportPage').then((m) => ({ default: m.ReportPage })),
 )
+const AuditPage = lazy(() =>
+  import('@/features/audit/AuditPage').then((m) => ({ default: m.AuditPage })),
+)
+const NotificationsPage = lazy(() =>
+  import('@/features/notifications/NotificationsPage').then((m) => ({
+    default: m.NotificationsPage,
+  })),
+)
 const DashboardPage = lazy(() =>
   import('@/features/dashboard/DashboardPage').then((m) => ({ default: m.DashboardPage })),
 )
@@ -163,13 +168,8 @@ export const routes: RouteObject[] = [
               page('/staff', 'nav.staff', <StaffPage />, 'staff.manage'),
               page('/branches', 'nav.branches', <BranchesPage />, 'branches.view'),
               page('/settings', 'nav.settings', <SettingsPage />, 'settings.manage'),
-              page(
-                '/audit',
-                'nav.audit',
-                <ComingSoonPage step={12} icon={ScrollText} />,
-                'audit.view',
-              ),
-              page('/notifications', 'nav.notifications', <ComingSoonPage step={12} icon={Bell} />),
+              page('/audit', 'nav.audit', <AuditPage />, 'audit.view'),
+              page('/notifications', 'nav.notifications', <NotificationsPage />),
               page('/profile', 'nav.profile', <ProfilePage />),
               page('/profile/password', 'header.changePassword', <ChangePasswordPage />),
               page('*', 'errors.notFoundTitle', <NotFoundPage />),

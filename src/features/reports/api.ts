@@ -40,12 +40,12 @@ export async function downloadReport(path: ReportPath, query: ReportQuery, forma
     params: { query: { ...query, export: format } as never },
     parseAs: 'blob',
   })
-  if (error !== undefined || !response.ok || !(data instanceof Blob)) {
+  if (error !== undefined || !response.ok || !data) {
     throw new ApiError(response.status, error)
   }
   const disposition = response.headers.get('Content-Disposition') ?? ''
   const name = /filename="([^"]+)"/.exec(disposition)?.[1] ?? `report.${format}`
-  const url = URL.createObjectURL(data)
+  const url = URL.createObjectURL(data as Blob)
   const link = document.createElement('a')
   link.href = url
   link.download = name

@@ -2354,6 +2354,7 @@ export interface components {
         };
         Notification: {
             readonly branch: number | null;
+            readonly branch_name: string | null;
             /** Format: date-time */
             readonly created_at: string;
             readonly id: number;
@@ -3486,6 +3487,11 @@ export interface operations {
     audit_list: {
         parameters: {
             query?: {
+                /** @description Action name; comma-separate several. */
+                action?: string;
+                branch?: number;
+                /** @description On or after this day (shop time). */
+                from?: string;
                 /** @description Which field to use when ordering the results. */
                 ordering?: string;
                 /** @description A page number within the paginated result set. */
@@ -3494,6 +3500,13 @@ export interface operations {
                 page_size?: number;
                 /** @description A search term. */
                 search?: string;
+                target_id?: string;
+                /** @description e.g. Sale, Expense, User. */
+                target_type?: string;
+                /** @description On or before this day (shop time). */
+                to?: string;
+                /** @description Id of the user who did it. */
+                user?: number;
             };
             header?: never;
             path?: never;
@@ -5125,6 +5138,9 @@ export interface operations {
                 page_size?: number;
                 /** @description A search term. */
                 search?: string;
+                type?: "business_event" | "cash_discrepancy" | "inventory_adjustment" | "low_stock" | "missing_end_of_day" | "pending_approval" | "stock_transfer";
+                /** @description Only unread ones. */
+                unread?: boolean;
             };
             header?: never;
             path?: never;
